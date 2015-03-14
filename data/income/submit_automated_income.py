@@ -1,0 +1,223 @@
+# This script adds any spend that occurs regularly on a monthly basis.
+
+import configparser
+from email.MIMEMultipart import MIMEMultipart
+from email.MIMEText import MIMEText
+import datetime
+import gspread
+import logging
+import os
+import requests
+import smtplib
+import sys
+
+
+class Script:
+    def __init__(self):
+        self.today = datetime.datetime.today()
+        self.directory = os.path.dirname(__file__)
+        self.filename = os.path.splitext(os.path.basename(__file__))[0]
+        self.path = os.path.join(self.directory, self.filename)
+
+
+class Flag(Script):
+    def __init__(self, entry):
+        Script.__init__(self)  # Change this to super if more pythonic.
+
+        self.today = self.today.strftime("%Y-%m-%d")
+        self.directory = os.path.join(self.directory, "flags")
+        self.filename = "{0}_{1}.flag".format(entry.category, self.today)
+        self.path = os.path.join(self.directory, self.filename)
+
+    def exists(self):
+        if os.path.isfile(self.path):
+            return True
+        else:
+            return False
+
+    def touch(self):
+        open(self.path, "w").close()
+
+    def untouch(self):
+        os.remove(self.path)
+
+
+class Entry:
+    def __init__(self, amount, category, notes, frequency, due_date, active):
+        self.amount = amount
+        self.category = category
+        self.notes = notes
+        self.frequency = frequency
+        self.due_date = due_date
+        self.active = active
+
+
+class Form:
+    def __init__(self, entry):
+        self.amount = entry.amount
+        self.category = entry.category
+        self.notes = entry.notes
+
+        self.url = "https://docs.google.com/forms/d/1rQAeHEHXmF_xviRpitfJGe7LROqqooWtl5y9x5BwXz4/formResponse"
+        self.submission = {"entry.1788911046": self.amount,
+                           "entry.22851461": "__other_option__",
+                           "entry.22851461.other_option_response": self.category,
+                           "entry.1728679999": self.notes}
+        self.response_code = None
+
+    def submit(self):
+        response = requests.post(self.url, self.submission)
+        self.response_code = response.status_code
+
+    def email(self, success):
+        # The following code is based on
+        # http://stackoverflow.com/questions/778202/smtplib-and-gmail-python-script-problems
+        # http://en.wikibooks.org/wiki/Python_Programming/Email
+        # I need to troubleshoot and test for errors.
+
+        sender = "trackerspend@gmail.com"
+        recipient = "jdgillespie91@gmail.com"
+        message = MIMEMultipart()
+        message['From'] = sender
+        message['To'] = recipient
+        message['Subject'] = "Income Submission Update (Automated Email)"
+
+        if success:
+            body = "The following entry has been submitted.\n\nAmount: {0}\nCategory: {1}\n" \
+                   "Notes: {2}\n".format(self.amount, self.category, self.notes)
+        else:
+            body = "The following entry failed submission.\n\nAmount: {0}\nCategory: {1}\n" \
+                   "Notes: {2}\n".format(self.amount, self.category, self.notes)
+
+        message.attach(MIMEText(body, "plain"))
+
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+        server.login("trackerspend@gmail.com", "deserters9192220\exasperatingly")
+        server.sendmail(sender, recipient, message.as_string())
+        server.close()
+
+
+# Initialise the Entry class based on a list row.
+def create_entry(row):
+    category = row[1]
+    notes = row[2]
+    frequency = row[3]
+    active = True if row[5] == "Yes" else False
+
+    # We assign zero to both amount and due_date if either are invalid types. We do this silently because the email
+    # confirmation will contain the details of the submission and highlight any issues that need to be addressed.
+    try:
+        amount = float(row[0])
+        due_date = int(row[4])
+    except (TypeError, ValueError):
+        amount = 0
+        due_date = 0
+
+    entry = Entry(amount, category, notes, frequency, due_date, active)
+
+    return entry
+
+
+def create_logger(script):
+    today = script.today.strftime("%Y-%m-%d_%H:%M:%S")
+    directory = os.path.join(script.directory, "logs")
+    filename = "{0}_{1}.log".format(script.filename, today)
+    path = os.path.join(directory, filename)
+
+    logger = logging.getLogger("logger")
+    logger.setLevel(logging.DEBUG)
+
+    # Add file handler to logger.
+    file_handler = logging.FileHandler(path)
+    formatter = logging.Formatter("%(asctime)s %(levelname)s - %(message)s", "%Y-%m-%d %H:%M:%S")
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
+    logger.debug("Log file created: {0}\n".format(path))
+
+    # Add smtp handler to logger.
+    # smtp_handler = logging.handlers.SMTPHandler(... # Complete this
+    # logger.debug("SMTP functionality configured.")
+
+    return logger
+
+
+def parse_config():
+    config = configparser.ConfigParser()
+    config.read(os.path.join(os.path.dirname(__file__), "resources", "config.ini"))
+
+    username = config.get("automated_income_entries", "username")
+    password = config.get("automated_income_entries", "password")
+    workbook = config.get("automated_income_entries", "workbook")
+    worksheet = config.get("automated_income_entries", "worksheet")
+
+    return username, password, workbook, worksheet
+
+
+def parse_entries_sheet():
+    username, password, workbook, worksheet = parse_config()
+
+    session = gspread.login(username, password)
+    workbook = session.open_by_key(workbook)
+    worksheet = workbook.worksheet(worksheet)
+
+    # Parse row-by-row until an empty row is encountered (data starts on second row).
+    row_index = 2
+    entries = []
+    while worksheet.row_values(row_index) and row_index <= worksheet.row_count:
+        row = worksheet.row_values(row_index)
+        entry = create_entry(row)
+        entries.append(entry)
+        row_index += 1
+
+    return entries
+
+
+def main():
+    script = Script()
+    logger = create_logger(script)
+
+    logger.info("Processing entries sheet.")
+    entries = parse_entries_sheet()
+    logger.info("Entries sheet processed.\n")
+
+    for entry in entries:
+        logger.info("Processing entry: {0}.".format(entry.category))
+        if entry.active:
+            logger.info("Entry is active. Continuing...")
+            flag = Flag(entry)
+            if not flag.exists():
+                logger.info("The flag file doesn't exist. Touching...")
+                flag.touch()
+                if entry.frequency == "Monthly":
+                    if entry.due_date == script.today.day:  # Think about introducing a "today" variable. I don't think it's logical to include "today" in the Script class.
+                        logger.info("An entry is required. Submitting...")
+                        form = Form(entry)
+                        form.submit()
+                        if form.response_code == requests.codes.ok:  # Have this as try: form.submit() as opposed to if/else (will read better).
+                            logger.info("The submission was accepted. Moving to next entry.\n")
+                            form.email(success=True)
+                        else:
+                            logger.info("The submission was not accepted. "
+                                        "Removing flag file and moving to next entry.\n")
+                            form.email(success=False)
+                            flag.untouch()
+                    else:
+                        logger.info("A submission is not required today. "
+                                    "Removing flag file and moving to next entry.\n".format(entry.frequency))
+                        flag.untouch()
+                else:
+                    logger.info("{0} spend is not yet implemented. "
+                                "Removing flag file and moving to next entry.\n".format(entry.frequency))
+                    flag.untouch()
+                    continue
+            else:
+                logger.info("The flag file exists. Moving to next entry.\n")
+        else:
+            logger.info("Entry is inactive. Moving to next entry.\n")
+
+    logger.info("End of script.")
+    sys.exit(0)
+
+if __name__ == "__main__":
+    main()
