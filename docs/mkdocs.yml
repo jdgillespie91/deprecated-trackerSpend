@@ -1,0 +1,9 @@
+site_name: trackerSpend
+repo_url: https://github.com/jdgillespie91/trackerSpend
+site_description: Online documentation for trackerSpend.
+site_author: Jacob Gillespie
+pages:
+- ['index.md', 'Introduction']
+- ['getting_started.md', 'Getting Started']
+- ['test.md', 'Test page']
+theme: readthedocs 
