@@ -22,4 +22,4 @@ For the foreseeable future, there will always be functionality that I can add to
 Documentation
 -------------
 
-Online documentation
+[Online documentation (a work in progress!)](http://trackerspend.readthedocs.org/en/latest/)
