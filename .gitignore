@@ -1,1 +1,9 @@
+# Virtual environment.
 env/
+
+# Documentation build.
+docs/site/
+
+# Other directories.
+.idea/
+
