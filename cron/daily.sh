@@ -21,7 +21,7 @@ export EXPENDITURE_EXPORTS_DIRECTORY="${EXPENDITURE_DIRECTORY}/exports"
 export INCOME_EXPORTS_DIRECTORY="${INCOME_DIRECTORY}/exports"
 
 # Scripts.
-
+python "${BASE_DIRECTORY}/utils/remove_icon_files.py"
 
 deactivate
 echo "${today} - END $(basename ${0})"
