@@ -2,7 +2,7 @@
 env/
 
 # Documentation build.
-docs/site/
+site/
 
 # Other directories.
 .idea/
