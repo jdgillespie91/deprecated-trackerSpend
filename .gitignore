@@ -1,12 +1,5 @@
-# Virtual environment.
-env/
-
-# Documentation build.
-site/
-
-# Other directories.
 .idea/
-
-# Compiled files.
+env/
+site/
 *.pyc
-
+config.ini

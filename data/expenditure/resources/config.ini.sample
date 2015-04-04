@@ -3,3 +3,16 @@ username = ***
 password = ***
 workbook = ***
 worksheet = ***
+
+[expenditure_form]
+username = ***
+password = ***
+sender = ***
+recipient = ***
+url = ***
+
+[submit_automated_expenditure]
+username = ***
+password = ***
+workbook = ***
+worksheet = ***
