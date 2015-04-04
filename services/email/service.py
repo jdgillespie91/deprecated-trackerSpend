@@ -81,11 +81,8 @@ class Service():
         email.attach(MIMEText(body, 'plain'))
 
         # Send email.
-        try:
-            server = smtplib.SMTP("smtp.gmail.com", 587)
-            server.starttls()
-            server.login(self.username, self.password)
-            server.sendmail(self.sender, recipient, email.as_string())
-            server.close()
-        except Exception as e:
-            print('Exception: {0}'.format(e))
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+        server.login(self.username, self.password)
+        server.sendmail(self.sender, recipient, email.as_string())
+        server.close()
