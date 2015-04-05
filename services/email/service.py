@@ -69,3 +69,8 @@ class Service():
 
         channel.basic_consume(self.callback, queue='email_service', no_ack=True)
         channel.start_consuming()
+
+
+if __name__ == '__main__':
+    service = Service()
+    service.run()
