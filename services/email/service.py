@@ -1,3 +1,15 @@
+"""
+This service sends an email from trackerspend@gmail.com.
+
+Subscribes to queue: email_service.
+Required attributes in message body: to, subject, email_body.
+
+For example,
+
+"{'to': 'jdgillespie91@gmail', 'subject': 'Hello, world', 'email_body': 'Hello
+to you too.'}"
+"""
+
 import ast
 import configparser
 import os
@@ -8,10 +20,13 @@ from email.MIMEText import MIMEText
 
 
 class Service():
+    """ This is the Service class. """
     def __init__(self):
+        """ This is a method of Service."""
         self.sender, self.username, self.password = self.parse_config()
 
     def parse_config(self):
+        """ This is a method of Service."""
         config = configparser.ConfigParser()
         config.read(os.path.join(os.path.dirname(__file__), "config.ini"))
 
@@ -22,6 +37,7 @@ class Service():
         return sender, username, password
 
     def callback(self, ch, method, properties, body):
+        """ This is a method of Service."""
         print(' [x] Received {0}'.format(body))
         print(' [x] Sending email.')
         try:
@@ -38,6 +54,7 @@ class Service():
             print(' [e] Email not sent.')
 
     def send_email(self, recipient, subject, email_body):
+        """ This is a method of Service."""
         # Build email.
         email = MIMEMultipart()
         email['From'] = self.sender
@@ -54,6 +71,7 @@ class Service():
         server.close()
 
     def run(self):
+        """ This is a method of Service."""
         print('Starting service.')
 
         # Establish connection with RabbitMQ server.
@@ -67,7 +85,8 @@ class Service():
         # Wait for messages.
         print(' [*] Waiting for messages. Press CTRL+C to exit.')
 
-        channel.basic_consume(self.callback, queue='email_service', no_ack=True)
+        channel.basic_consume(self.callback, queue='email_service',
+                              no_ack=True)
         channel.start_consuming()
 
 
