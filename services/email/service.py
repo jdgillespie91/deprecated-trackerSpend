@@ -11,30 +11,19 @@ to you too.'}"
 """
 
 import ast
-import configparser
 import os
 import pika
 import smtplib
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
+from configs import config
 
 
 class Service():
     """ This is the Service class. """
     def __init__(self):
         """ This is a method of Service."""
-        self.sender, self.username, self.password = self.parse_config()
-
-    def parse_config(self):
-        """ This is a method of Service."""
-        config = configparser.ConfigParser()
-        config.read(os.path.join(os.path.dirname(__file__), "config.ini"))
-
-        sender = config.get("service", "sender")
-        username = config.get("service", "username")
-        password = config.get("service", "password")
-
-        return sender, username, password
+        self.config = config.Config('email_service')
 
     def callback(self, ch, method, properties, body):
         """ This is a method of Service."""
@@ -57,7 +46,7 @@ class Service():
         """ This is a method of Service."""
         # Build email.
         email = MIMEMultipart()
-        email['From'] = self.sender
+        email['From'] = self.config.sender
         email['To'] = recipient
         email['Subject'] = subject
         body = email_body
@@ -66,8 +55,8 @@ class Service():
         # Send email.
         server = smtplib.SMTP("smtp.gmail.com", 587)
         server.starttls()
-        server.login(self.username, self.password)
-        server.sendmail(self.sender, recipient, email.as_string())
+        server.login(self.config.username, self.config.password)
+        server.sendmail(self.config.sender, recipient, email.as_string())
         server.close()
 
     def run(self):
