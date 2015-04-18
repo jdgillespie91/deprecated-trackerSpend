@@ -20,13 +20,22 @@ from configs import config
 
 
 class Service():
-    """ This is the Service class. """
+    """ 
+    TODO Make this useful.
+    This is the Service class. 
+    """
     def __init__(self):
-        """ This is a method of Service."""
+        """ 
+        TODO Make this useful.
+        This is a method of Service.
+        """
         self.config = config.Config('email_service')
 
     def __callback(self, ch, method, properties, body):
-        """ This is a method of Service."""
+        """ 
+        TODO Make this useful.
+        This is a method of Service.
+        """
         print(' [x] Received {0}'.format(body))
         print(' [x] Sending email.')
         try:
@@ -43,7 +52,10 @@ class Service():
             print(' [e] Email not sent.')
 
     def __send_email(self, recipient, subject, email_body, attachment_path):
-        """ This is a method of Service."""
+        """ 
+        TODO Make this useful.
+        This is a method of Service.
+        """
         # Build email.
         email = MIMEMultipart()
         email['From'] = self.config.sender
@@ -63,7 +75,10 @@ class Service():
         server.close()
 
     def run(self):
-        """ This is a method of Service."""
+        """ 
+        TODO Make this useful.
+        This is a method of Service.
+        """
         print('Starting service.')
 
         # Establish connection with RabbitMQ server.
