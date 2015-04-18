@@ -2,4 +2,5 @@
 env/
 site/
 *.pyc
+*.pem
 config.ini
