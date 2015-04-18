@@ -25,13 +25,13 @@ class Service():
         """ This is a method of Service."""
         self.config = config.Config('email_service')
 
-    def callback(self, ch, method, properties, body):
+    def __callback(self, ch, method, properties, body):
         """ This is a method of Service."""
         print(' [x] Received {0}'.format(body))
         print(' [x] Sending email.')
         try:
             body = ast.literal_eval(body)
-            self.send_email(body['to'], body['subject'], body['email_body'])
+            self.__send_email(body['to'], body['subject'], body['email_body'])
             print(' [x] Email sent.')
         except KeyError as e:
             print(' [e] The message is missing the following key: {'
@@ -42,7 +42,7 @@ class Service():
             print(' [e] Arguments: {0}'.format(e.args))
             print(' [e] Email not sent.')
 
-    def send_email(self, recipient, subject, email_body):
+    def __send_email(self, recipient, subject, email_body):
         """ This is a method of Service."""
         # Build email.
         email = MIMEMultipart()
@@ -74,7 +74,7 @@ class Service():
         # Wait for messages.
         print(' [*] Waiting for messages. Press CTRL+C to exit.')
 
-        channel.basic_consume(self.callback, queue='email_service',
+        channel.basic_consume(self.__callback, queue='email_service',
                               no_ack=True)
         channel.start_consuming()
 
