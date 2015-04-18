@@ -31,7 +31,7 @@ class Service():
         print(' [x] Sending email.')
         try:
             body = ast.literal_eval(body)
-            self.__send_email(body['to'], body['subject'], body['email_body'])
+            self.__send_email(body['to'], body['subject'], body['email_body'], body['attachment_path'])
             print(' [x] Email sent.')
         except KeyError as e:
             print(' [e] The message is missing the following key: {'
@@ -42,13 +42,16 @@ class Service():
             print(' [e] Arguments: {0}'.format(e.args))
             print(' [e] Email not sent.')
 
-    def __send_email(self, recipient, subject, email_body):
+    def __send_email(self, recipient, subject, email_body, attachment_path):
         """ This is a method of Service."""
         # Build email.
         email = MIMEMultipart()
         email['From'] = self.config.sender
         email['To'] = recipient
         email['Subject'] = subject
+        if attachment_path:
+            # TODO add attachment to email.
+            pass
         body = email_body
         email.attach(MIMEText(body, 'plain'))
 
