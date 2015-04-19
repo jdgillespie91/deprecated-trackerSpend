@@ -21,6 +21,8 @@ export EXPENDITURE_EXPORTS_DIRECTORY="${EXPENDITURE_DIRECTORY}/exports"
 export INCOME_EXPORTS_DIRECTORY="${INCOME_DIRECTORY}/exports"
 
 # Scripts.
+python "${EXPENDITURE_DIRECTORY}/submit_automated_expenditure.py"
+python "${INCOME_DIRECTORY}/submit_automated_income.py"
 python "${BASE_DIRECTORY}/utils/remove_icon_files.py"
 
 deactivate

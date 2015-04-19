@@ -22,6 +22,5 @@ export INCOME_EXPORTS_DIRECTORY="${INCOME_DIRECTORY}/exports"
 
 # Scripts.
 
-
 deactivate
 echo "${today} - END $(basename ${0})"
