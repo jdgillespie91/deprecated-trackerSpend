@@ -3,10 +3,10 @@
 today=$(date +"%Y-%m-%d %H:%M:%S")
 
 echo "${today} - START $(basename ${0})"
-source "/Users/jake/googleDrive/trackerSpend/env/bin/activate"
+source "/home/ec2-user/trackerSpend/env/bin/activate"
 
 # Global variables.
-export BASE_DIRECTORY="/Users/jake/googleDrive/trackerSpend"
+export BASE_DIRECTORY="/home/ec2-user/trackerSpend"
 
 export CRON_DIRECTORY="${BASE_DIRECTORY}/cron"
 export DATA_DIRECTORY="${BASE_DIRECTORY}/data"

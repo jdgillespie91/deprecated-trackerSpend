@@ -1,4 +1,4 @@
 # Scheduled tasks.
-*  *  *  *  * /bin/bash /Users/jake/googleDrive/trackerSpend/cron/minutely.sh > /Users/jake/googleDrive/trackerSpend/cron/logs/minutely.log 2>&1
-30 *  *  *  * /bin/bash /Users/jake/googleDrive/trackerSpend/cron/hourly.sh > /Users/jake/googleDrive/trackerSpend/cron/logs/hourly.log 2>&1
-30 06 *  *  * /bin/bash /Users/jake/googleDrive/trackerSpend/cron/daily.sh > /Users/jake/googleDrive/trackerSpend/cron/logs/daily.log 2>&1
+*  *  *  *  * /bin/bash /home/ec2-user/trackerSpend/cron/minutely.sh > /home/ec2-user/trackerSpend/cron/logs/minutely.log 2>&1
+30 *  *  *  * /bin/bash /home/ec2-user/trackerSpend/cron/hourly.sh > /home/ec2-user/trackerSpend/cron/logs/hourly.log 2>&1
+30 06 *  *  * /bin/bash /home/ec2-user/trackerSpend/cron/daily.sh > /home/ec2-user/trackerSpend/cron/logs/daily.log 2>&1
