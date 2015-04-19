@@ -2,7 +2,7 @@ import argparse
 import pika
 
 
-def send_message(queue, body=None):
+def send_message(queue, body):
     """
     Sends a message to the specified queue with specified body if applicable.
 
@@ -18,8 +18,8 @@ def send_message(queue, body=None):
 
     channel.basic_publish(exchange='', routing_key=queue, body=body)
     print(" [x] Message sent.")
-    print(" Queue: {0}".format(queue))
-    print(" Body: {0}".format(body))
+    print(" [i] Queue: {0}".format(queue))
+    print(" [i] Body: {0}".format(body))
 
     connection.close()
 

@@ -1,6 +1,7 @@
 .idea/
 env/
 site/
+data/reports/*
 *.pyc
 *.pem
 config.ini

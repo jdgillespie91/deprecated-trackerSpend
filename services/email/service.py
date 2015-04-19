@@ -14,8 +14,8 @@ import ast
 import os
 import pika
 import smtplib
-from email.MIMEMultipart import MIMEMultipart
-from email.MIMEText import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from configs import config
 
 
@@ -36,11 +36,12 @@ class Service():
         TODO Make this useful.
         This is a method of Service.
         """
-        print(' [x] Received {0}'.format(body))
+        print(' [i] Received {0}'.format(body))
         print(' [x] Sending email.')
         try:
             body = ast.literal_eval(body)
-            self.__send_email(body['to'], body['subject'], body['email_body'], body['attachment_path'])
+            self.__send_email(body['to'], body['subject'], body['email_body'],
+                              body.get('attachment_path'))
             print(' [x] Email sent.')
         except KeyError as e:
             print(' [e] The message is missing the following key: {'
@@ -51,7 +52,8 @@ class Service():
             print(' [e] Arguments: {0}'.format(e.args))
             print(' [e] Email not sent.')
 
-    def __send_email(self, recipient, subject, email_body, attachment_path):
+    def __send_email(self, recipient, subject, email_body,
+                     attachment_path=None):
         """ 
         TODO Make this useful.
         This is a method of Service.
@@ -61,11 +63,16 @@ class Service():
         email['From'] = self.config.sender
         email['To'] = recipient
         email['Subject'] = subject
-        if attachment_path:
-            # TODO add attachment to email.
-            pass
+
         body = email_body
         email.attach(MIMEText(body, 'plain'))
+
+        if attachment_path and os.path.isfile(attachment_path):
+            f = file(attachment_path)
+            attachment = MIMEText(f.read())
+            attachment.add_header('Content-Disposition', 'attachment',
+                                  filename=os.path.basename(attachment_path))
+            email.attach(attachment)
 
         # Send email.
         server = smtplib.SMTP("smtp.gmail.com", 587)
@@ -90,7 +97,7 @@ class Service():
         channel.queue_declare(queue='email_service')
 
         # Wait for messages.
-        print(' [*] Waiting for messages. Press CTRL+C to exit.')
+        print(' [x] Waiting for messages. Press CTRL+C to exit.')
 
         channel.basic_consume(self.__callback, queue='email_service',
                               no_ack=True)
