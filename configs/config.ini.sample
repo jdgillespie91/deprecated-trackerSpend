@@ -1,0 +1,12 @@
+[expenditure]
+exports_directory = ***
+
+[income]
+exports_directory = ***
+
+[email_service]
+sender = ***
+username = ***
+password = ***
+
+[reports_service]
