@@ -40,9 +40,9 @@ def create_logger(script):
 def get_list_of_feeds():
     feeds = []
 
-    if os.environ.has_key("EXPENDITURE_EXPORTS_DIRECTORY"):
-        for feed in glob.glob(os.environ.get("EXPENDITURE_EXPORTS_DIRECTORY") + "/*.csv"):
-            feeds.append(feed)
+    config = config.Config('expenditure')
+    for feed in glob.glob(os.path.join(config.exports_directory, '*.csv'))
+        feeds.append(feed)
 
     return feeds
 

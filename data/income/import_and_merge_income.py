@@ -4,6 +4,7 @@ import logging
 import os
 import psycopg2
 import sys
+from configs import config
 
 
 class Script:
@@ -40,15 +41,11 @@ def create_logger(script):
 def get_list_of_feeds():
     feeds = []
 
-    try:
-        income_exports_directory = os.environ["INCOME_EXPORTS_DIRECTORY"]
-        for feed in glob.glob(income_exports_directory + "/*.csv"):
-            feeds.append(feed)
-        return feeds
-    except KeyError:
-        raise KeyError
+    config = config.Config('income')
+    for feed in glob.glob(os.path.join(config.exports_directory, '*.csv'))
+        feeds.append(feed)
 
-
+    return feeds
 
 
 def archive_feed(source_path, load_success):
