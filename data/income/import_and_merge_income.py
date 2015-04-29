@@ -61,9 +61,11 @@ def archive_feed(source_path, load_success):
 
 
 def psql_call(query, logger):
+    config = config.Config('database')
+
     con = None
-    database = "jake"
-    user = "jake"
+    database = config.database
+    user = config.user
 
     try:
         con = psycopg2.connect(database=database, user=user)

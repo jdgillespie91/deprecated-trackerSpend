@@ -10,3 +10,7 @@ username = ***
 password = ***
 
 [reports_service]
+
+[database] 
+database = ***
+user = ***
