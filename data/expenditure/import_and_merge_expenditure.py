@@ -41,7 +41,7 @@ def get_list_of_feeds():
     feeds = []
 
     config = config.Config('expenditure')
-    for feed in glob.glob(os.path.join(config.exports_directory, '*.csv'))
+    for feed in glob.glob(os.path.join(config.exports_directory, '*.csv')):
         feeds.append(feed)
 
     return feeds
