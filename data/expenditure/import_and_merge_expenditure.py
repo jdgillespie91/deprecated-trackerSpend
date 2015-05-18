@@ -4,6 +4,7 @@ import logging
 import os
 import psycopg2
 import sys
+from configs import config
 
 
 class Script:
@@ -40,8 +41,8 @@ def create_logger(script):
 def get_list_of_feeds():
     feeds = []
 
-    config = config.Config('expenditure')
-    for feed in glob.glob(os.path.join(config.exports_directory, '*.csv')):
+    con = config.Config('expenditure')
+    for feed in glob.glob(os.path.join(con.exports_directory, '*.csv')):
         feeds.append(feed)
 
     return feeds
@@ -60,11 +61,10 @@ def archive_feed(source_path, load_success):
 
 
 def psql_call(query, logger):
-    config = config.Config('database')
+    conf = config.Config('database')
 
-    con = None
-    database = config.database
-    user = config.user
+    database = conf.database
+    user = conf.user
 
     try:
         con = psycopg2.connect(database=database, user=user)
