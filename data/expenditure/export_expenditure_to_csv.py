@@ -69,7 +69,9 @@ def parse_expenditure_sheet():
     for row in worksheet_values:
         row.append(export_filename)
 
-    with open(export_path, "w") as f:
+    print(worksheet_values)
+
+    with open(export_path, 'w') as f:
         writer = csv.writer(f)
         writer.writerows(worksheet_values)
 
