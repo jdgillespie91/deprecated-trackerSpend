@@ -41,8 +41,8 @@ def create_logger(script):
 def get_list_of_feeds():
     feeds = []
 
-    con = config.Config('expenditure')
-    for feed in glob.glob(os.path.join(con.exports_directory, '*.csv')):
+    conf = config.Config('expenditure')
+    for feed in glob.glob(os.path.join(conf.exports_directory, '*.csv')):
         feeds.append(feed)
 
     return feeds
