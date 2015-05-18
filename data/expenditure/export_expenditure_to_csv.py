@@ -60,19 +60,20 @@ def parse_expenditure_sheet():
     worksheet = workbook.worksheet(worksheet)
 
     worksheet_values = worksheet.get_all_values()
-    worksheet_values_ascii = [[t.encode("ascii", "ignore") for t in s] for s in worksheet_values]
 
     export_directory = os.path.join(os.path.dirname(__file__), "exports")
     export_filename = "{0}_{1}.csv".format("export", datetime.datetime.today().strftime("%Y-%m-%d_%H:%M:%S"))
     export_path = os.path.join(export_directory, export_filename)
 
-    # Append feed source to each row in worksheet_values_ascii.
-    for row in worksheet_values_ascii:
+    # Append feed source to each row in the export.
+    for row in worksheet_values:
         row.append(export_filename)
 
-    with open(export_path, "w") as f:
+    print(worksheet_values)
+
+    with open(export_path, 'w') as f:
         writer = csv.writer(f)
-        writer.writerows(worksheet_values_ascii)
+        writer.writerows(worksheet_values)
 
     return 0
 
