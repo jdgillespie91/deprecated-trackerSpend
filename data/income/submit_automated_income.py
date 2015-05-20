@@ -1,8 +1,8 @@
 # This script adds any spend that occurs regularly on a monthly basis.
 
 import configparser
-from email.MIMEMultipart import MIMEMultipart
-from email.MIMEText import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 import datetime
 import gspread
 import logging
