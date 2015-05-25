@@ -14,7 +14,7 @@ I am re-deploying the project on EC2 since I wanted to change the machine type I
 ## Virtual environment
 
 1. `sudo apt-get install python-pip`
-2. `sudo pip install virtualenv`
+2. `pip install virtualenv` (note that I had used sudo here but I don't think it's necessary).
 3. `mkdir -p .envs && virtualenv -p /usr/bin/python3.4 .envs/trackerSpend`
 
 ## .bashrc
@@ -46,3 +46,14 @@ function trackerSpend {
     fi
 }
 ```
+
+## Virtual environment (continued)
+
+1. `. ~/.bashrc && trackerSpend`
+2. `pip install requests`
+3. `pip install gspread`
+4. `pip install pika`
+
+## PostgreSQL
+
+1. Install PostgreSQL 9.4 as per the instructions on [this page](http://www.postgresql.org/download/linux/ubuntu/). Note that only 9.3 comes by default so you have to use the PostgreSQL Apt Repository.
