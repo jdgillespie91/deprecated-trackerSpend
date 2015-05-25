@@ -1,7 +1,16 @@
+# Directories
 .idea/
-env/
+cron/logs/*
+data/expenditure/exports/
+data/expenditure/flags/
+data/expenditure/logs/
+data/income/exports/
+data/income/flags/
+data/income/logs/
+data/reports/
 site/
-data/reports/*
-*.pyc
+
+# Files
+*.ini
 *.pem
-config.ini
+*.pyc

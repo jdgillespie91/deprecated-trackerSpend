@@ -7,5 +7,4 @@ pages:
 - ['what/future.md', 'What am I building?']
 - ['what/present.md', 'What am I building?']
 - ['what/past.md', 'What am I building?']
-- ['how/rules.md', 'How am I building it?']
 theme: readthedocs 
