@@ -14,7 +14,7 @@ I am re-deploying the project on EC2 since I wanted to change the machine type I
 ## Virtual environment
 
 1. `sudo apt-get install python-pip`
-2. `pip install virtualenv` (note that I had used sudo here but I don't think it's necessary).
+2. `pip install virtualenv` (note that I had used sudo here but I don't think it's necessary - it only determines which python to use).
 3. `mkdir -p .envs && virtualenv -p /usr/bin/python3.4 .envs/trackerSpend`
 
 ## .bashrc
@@ -56,4 +56,25 @@ function trackerSpend {
 
 ## PostgreSQL
 
+Note that some work on the database structure definitely needs to be done.
+
 1. Install PostgreSQL 9.4 as per the instructions on [this page](http://www.postgresql.org/download/linux/ubuntu/). Note that only 9.3 comes by default so you have to use the PostgreSQL Apt Repository.
+2. `sudo -iu postgres`
+3. `psql`
+4. `CREATE SCHEMA main AUTHORIZATION postgres;`
+5. `GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA main TO postgres;`
+6. `CREATE USER ubuntu;`
+7. `GRANT SELECT ON ALL TABLES IN SCHEMA main TO ubuntu;`
+8. `\q`
+9. `logout`
+
+## psycopg2
+
+1. `sudo apt-get install python-psycopg2` on recommendation of [this page](http://initd.org/psycopg/docs/install.html). However, this did not enable `pip install psycopg2` to run successfully.
+2. `sudo apt-get install libpq-dev python-dev`. Note that this led to a different error (missing Python.h). The solution _should_ be the python-dev package. A little Googling suggests that there is a different package for Python 3.
+3. `sudo apt-get install python3-dev`
+4. `pip install psycopg2`
+
+## Rabbit
+
+1.
