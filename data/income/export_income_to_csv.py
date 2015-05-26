@@ -1,12 +1,12 @@
 # This script adds any income that occurs regularly on a monthly basis.
 
-import configparser
 import csv
 import datetime
 import gspread
 import logging
 import os
 import sys
+from configs import config
 
 
 class Script:
@@ -40,24 +40,12 @@ def create_logger(script):
     return logger
 
 
-def parse_config():
-    config = configparser.ConfigParser()
-    config.read(os.path.join(os.path.dirname(__file__), "resources", "config.ini"))
-
-    username = config.get("income_responses", "username")
-    password = config.get("income_responses", "password")
-    workbook = config.get("income_responses", "workbook")
-    worksheet = config.get("income_responses", "worksheet")
-
-    return username, password, workbook, worksheet
-
-
 def parse_income_sheet():
-    username, password, workbook, worksheet = parse_config()
+    conf = config.Config('income_responses')
 
-    session = gspread.login(username, password)
-    workbook = session.open_by_key(workbook)
-    worksheet = workbook.worksheet(worksheet)
+    session = gspread.login(conf.username, conf.password)
+    workbook = session.open_by_key(conf.workbook)
+    worksheet = workbook.worksheet(conf.worksheet)
 
     worksheet_values = worksheet.get_all_values()
 
@@ -81,8 +69,11 @@ def main():
     logger = create_logger(script)
 
     logger.info("Processing income sheet.")
-    parse_income_sheet()
-    logger.info("Income sheet processed.\n")
+    try:
+        parse_income_sheet()
+        logger.info("Income sheet processed.\n")
+    except AttributeError:
+        logger.critical("Unable to open session.")
     
     logger.info("End of script.")
     sys.exit(0)
