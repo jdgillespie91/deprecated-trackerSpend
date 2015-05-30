@@ -12,5 +12,6 @@ site/
 
 # Files
 *.ini
+*.json
 *.pem
 *.pyc
