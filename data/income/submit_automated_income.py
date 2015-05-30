@@ -1,15 +1,17 @@
 # This script adds any spend that occurs regularly on a monthly basis.
 
-import configparser
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 import datetime
 import gspread
+import json
 import logging
 import os
 import requests
 import smtplib
 import sys
+from configs import config
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from oauth2client.client import SignedJwtAssertionCredentials
 
 
 class Script:
@@ -24,9 +26,9 @@ class Flag(Script):
     def __init__(self, entry):
         Script.__init__(self)  # Change this to super if more pythonic.
 
-        self.today = self.today.strftime("%Y-%m-%d")
-        self.directory = os.path.join(self.directory, "flags")
-        self.filename = "{0}_{1}.flag".format(entry.category, self.today)
+        self.today = self.today.strftime('%Y-%m-%d')
+        self.directory = os.path.join(self.directory, 'flags')
+        self.filename = '{0}_{1}.flag'.format(entry.category, self.today)
         self.path = os.path.join(self.directory, self.filename)
 
     def exists(self):
@@ -36,7 +38,7 @@ class Flag(Script):
             return False
 
     def touch(self):
-        open(self.path, "w").close()
+        open(self.path, 'w').close()
 
     def untouch(self):
         os.remove(self.path)
@@ -57,12 +59,11 @@ class Form:
         self.amount = entry.amount
         self.category = entry.category
         self.notes = entry.notes
-
-        self.url = "https://docs.google.com/forms/d/1rQAeHEHXmF_xviRpitfJGe7LROqqooWtl5y9x5BwXz4/formResponse"
-        self.submission = {"entry.1788911046": self.amount,
-                           "entry.22851461": "__other_option__",
-                           "entry.22851461.other_option_response": self.category,
-                           "entry.1728679999": self.notes}
+        self.conf = config.Config('income_form')
+        self.submission = {'entry.1788911046': self.amount,
+                           'entry.22851461': '__other_option__',
+                           'entry.22851461.other_option_response': self.category,
+                           'entry.1728679999': self.notes}
         self.response_code = None
 
     def submit(self):
@@ -75,26 +76,24 @@ class Form:
         # http://en.wikibooks.org/wiki/Python_Programming/Email
         # I need to troubleshoot and test for errors.
 
-        sender = "trackerspend@gmail.com"
-        recipient = "jdgillespie91@gmail.com"
         message = MIMEMultipart()
-        message['From'] = sender
-        message['To'] = recipient
-        message['Subject'] = "Income Submission Update (Automated Email)"
+        message['From'] = self.conf.sender
+        message['To'] = self.conf.recipient
+        message['Subject'] = 'Income Submission Update (Automated Email)'
 
         if success:
-            body = "The following entry has been submitted.\n\nAmount: {0}\nCategory: {1}\n" \
-                   "Notes: {2}\n".format(self.amount, self.category, self.notes)
+            body = 'The following entry has been submitted.\n\nAmount: {0}\nCategory: {1}\n' \
+                   'Notes: {2}\n'.format(self.amount, self.category, self.notes)
         else:
-            body = "The following entry failed submission.\n\nAmount: {0}\nCategory: {1}\n" \
-                   "Notes: {2}\n".format(self.amount, self.category, self.notes)
+            body = 'The following entry failed submission.\n\nAmount: {0}\nCategory: {1}\n' \
+                   'Notes: {2}\n'.format(self.amount, self.category, self.notes)
 
-        message.attach(MIMEText(body, "plain"))
+        message.attach(MIMEText(body, 'plain'))
 
-        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
-        server.login("trackerspend@gmail.com", "deserters9192220\exasperatingly")
-        server.sendmail(sender, recipient, message.as_string())
+        server.login(self.conf.username, self.conf.password)
+        server.sendmail(self.conf.sender, self.conf.recipient, message.as_string())
         server.close()
 
 
@@ -103,7 +102,7 @@ def create_entry(row):
     category = row[1]
     notes = row[2]
     frequency = row[3]
-    active = True if row[5] == "Yes" else False
+    active = True if row[5] == 'Yes' else False
 
     # We assign zero to both amount and due_date if either are invalid types. We do this silently because the email
     # confirmation will contain the details of the submission and highlight any issues that need to be addressed.
@@ -120,46 +119,51 @@ def create_entry(row):
 
 
 def create_logger(script):
-    today = script.today.strftime("%Y-%m-%d_%H:%M:%S")
-    directory = os.path.join(script.directory, "logs")
-    filename = "{0}_{1}.log".format(script.filename, today)
+    today = script.today.strftime('%Y-%m-%d_%H:%M:%S')
+    directory = os.path.join(script.directory, 'logs')
+    filename = '{0}_{1}.log'.format(script.filename, today)
     path = os.path.join(directory, filename)
 
-    logger = logging.getLogger("logger")
+    logger = logging.getLogger('logger')
     logger.setLevel(logging.DEBUG)
 
     # Add file handler to logger.
     file_handler = logging.FileHandler(path)
-    formatter = logging.Formatter("%(asctime)s %(levelname)s - %(message)s", "%Y-%m-%d %H:%M:%S")
+    formatter = logging.Formatter('%(asctime)s %(levelname)s - %(message)s', '%Y-%m-%d %H:%M:%S')
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
-    logger.debug("Log file created: {0}\n".format(path))
+    logger.debug('Log file created: {0}\n'.format(path))
 
     # Add smtp handler to logger.
     # smtp_handler = logging.handlers.SMTPHandler(... # Complete this
-    # logger.debug("SMTP functionality configured.")
+    # logger.debug('SMTP functionality configured.')
 
     return logger
 
 
 def parse_config():
     config = configparser.ConfigParser()
-    config.read(os.path.join(os.path.dirname(__file__), "resources", "config.ini"))
+    config.read(os.path.join(os.path.dirname(__file__), 'resources', 'config.ini'))
 
-    username = config.get("automated_income_entries", "username")
-    password = config.get("automated_income_entries", "password")
-    workbook = config.get("automated_income_entries", "workbook")
-    worksheet = config.get("automated_income_entries", "worksheet")
+    username = config.get('automated_income_entries', 'username')
+    password = config.get('automated_income_entries', 'password')
+    workbook = config.get('automated_income_entries', 'workbook')
+    worksheet = config.get('automated_income_entries', 'worksheet')
 
     return username, password, workbook, worksheet
 
 
 def parse_entries_sheet():
-    username, password, workbook, worksheet = parse_config()
+    conf = config.Config('income_entries')
 
-    session = gspread.login(username, password)
-    workbook = session.open_by_key(workbook)
-    worksheet = workbook.worksheet(worksheet)
+    json_key = json.load(open(conf.key))
+    scope = ['https://spreadsheets.google.com/feeds']
+
+    credentials = SignedJwtAssertionCredentials(json_key['client_email'], bytes(json_key['private_key'], 'UTF-8'), scope)
+    session = gspread.authorize(credentials)
+
+    workbook = session.open_by_key(conf.workbook)
+    worksheet = workbook.worksheet(conf.worksheet)
 
     # Parse row-by-row until an empty row is encountered (data starts on second row).
     row_index = 2
@@ -173,51 +177,48 @@ def parse_entries_sheet():
     return entries
 
 
-def main():
+if __name__ == '__main__':
     script = Script()
     logger = create_logger(script)
 
-    logger.info("Processing entries sheet.")
+    logger.info('Processing entries sheet.')
     entries = parse_entries_sheet()
-    logger.info("Entries sheet processed.\n")
+    logger.info('Entries sheet processed.\n')
 
     for entry in entries:
-        logger.info("Processing entry: {0}.".format(entry.category))
+        logger.info('Processing entry: {0}.'.format(entry.category))
         if entry.active:
-            logger.info("Entry is active. Continuing...")
+            logger.info('Entry is active. Continuing...')
             flag = Flag(entry)
             if not flag.exists():
-                logger.info("The flag file doesn't exist. Touching...")
+                logger.info('The flag file does not exist. Touching...')
                 flag.touch()
-                if entry.frequency == "Monthly":
+                if entry.frequency == 'Monthly':
                     if entry.due_date == script.today.day:  # Think about introducing a "today" variable. I don't think it's logical to include "today" in the Script class.
-                        logger.info("An entry is required. Submitting...")
+                        logger.info('An entry is required. Submitting...')
                         form = Form(entry)
                         form.submit()
                         if form.response_code == requests.codes.ok:  # Have this as try: form.submit() as opposed to if/else (will read better).
-                            logger.info("The submission was accepted. Moving to next entry.\n")
+                            logger.info('The submission was accepted. Moving to next entry.\n')
                             form.email(success=True)
                         else:
-                            logger.info("The submission was not accepted. "
-                                        "Removing flag file and moving to next entry.\n")
+                            logger.info('The submission was not accepted. '
+                                        'Removing flag file and moving to next entry.\n')
                             form.email(success=False)
                             flag.untouch()
                     else:
-                        logger.info("A submission is not required today. "
-                                    "Removing flag file and moving to next entry.\n".format(entry.frequency))
+                        logger.info('A submission is not required today. '
+                                    'Removing flag file and moving to next entry.\n'.format(entry.frequency))
                         flag.untouch()
                 else:
-                    logger.info("{0} spend is not yet implemented. "
-                                "Removing flag file and moving to next entry.\n".format(entry.frequency))
+                    logger.info('{0} spend is not yet implemented. '
+                                'Removing flag file and moving to next entry.\n'.format(entry.frequency))
                     flag.untouch()
                     continue
             else:
-                logger.info("The flag file exists. Moving to next entry.\n")
+                logger.info('The flag file exists. Moving to next entry.\n')
         else:
-            logger.info("Entry is inactive. Moving to next entry.\n")
+            logger.info('Entry is inactive. Moving to next entry.\n')
 
-    logger.info("End of script.")
+    logger.info('End of script.')
     sys.exit(0)
-
-if __name__ == "__main__":
-    main()
