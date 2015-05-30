@@ -61,12 +61,23 @@ Note that some work on the database structure definitely needs to be done.
 1. Install PostgreSQL 9.4 as per the instructions on [this page](http://www.postgresql.org/download/linux/ubuntu/). Note that only 9.3 comes by default so you have to use the PostgreSQL Apt Repository.
 2. `sudo -iu postgres`
 3. `psql`
-4. `CREATE SCHEMA main AUTHORIZATION postgres;`
-5. `GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA main TO postgres;`
-6. `CREATE USER ubuntu;`
-7. `GRANT SELECT ON ALL TABLES IN SCHEMA main TO ubuntu;`
-8. `\q`
-9. `logout`
+4. `CREATE SCHEMA postgres AUTHORIZATION postgres;`
+5. `GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA postgres TO postgres;`
+6. `ALTER ROLE postgres WITH PASSWORD 'postgres';`
+7. `\q`
+8. `logout`
+
+We need to enable password authentication for the postgres user.
+
+9. `sudo vim /etc/postgresql/9.4/main/pg_hba.conf`
+10. Add the line `local   all             ubuntu                                  md5`, ensuring it is the second uncommented line.
+11. Exit out of vim and run `sudo service postgresql restart`
+
+You should now be able to login from the command line without changing user.
+
+12. `psql -d postgres -U postgres`
+
+If this works, exit `psql` again.
 
 ## psycopg2
 
@@ -75,6 +86,6 @@ Note that some work on the database structure definitely needs to be done.
 3. `sudo apt-get install python3-dev`
 4. `pip install psycopg2`
 
-## Rabbit
+## TODO
 
-1.
+I still need to write notes on backing up the database and building rabbit (something I've not done on the prod server yet).
