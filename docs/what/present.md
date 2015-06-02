@@ -2,44 +2,12 @@
 
 ## In short
 
-* Building an email service.
-* Building summary reports.
-* Building forecasting reports.
+* Deploying on AWS.
 
 ## In more detail
 
-### Building an email service.
+### Deploying on AWS.
 
-I have recently been working within a service-oriented architecture and I
-find it very powerful. The fact that each service has an interface that
-defines exactly how it should be interacted with makes it predictable and
-therefore maintainable.
+I would like to host my project externally so that it can be up constantly (something that is convenient now but will become essential as the project grows).
 
-To extend this, I'm building an email service. At this early stage, I'd like
-the service to accept various email attributes (think sender, recipient,
-subject, attachments) and send an email according to those attributes.
-
-I would hope to use this service to send out regular reports and updates. I
-should migrate some of the internal email functionality that I have to this
-service.
-
-### Building summary reports.
-
-I would like to build reports that detail show much I've spent in a given
-month, how much I have left to spend and how much I have left to spend after
-taking into account fixed expenditure (things like rent).
-
-I expect to build these reports by calling psql from within a Python script. I
- would like to incorporate visualisation of these reports but perhaps a
- proof-of-concept would be simply to email out some numbers.
-
-### Building forecasting reports.
-
-I would like to build reports that programatically predict my future spending
-. I realise that the various categories by which I group my spend have
-different levels of predictability. Some will remain fixed, others will vary
-by only a small amount, some may be seasonal, and so on. I'd like to build
-prediction methods that automatically account for this.
-
- Note that this will be an exercise in forecasting since I'll be able to use
- the infrastructure from the summary reports to actually send these reports out.
+Amazon offers a cloud computing service called EC2 as part of its AWS suite. This is a good solution for me because it offers everything I require at the moment and has a free tier. This gives me the opportunity to grow my project.

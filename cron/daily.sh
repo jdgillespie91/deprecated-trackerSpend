@@ -3,10 +3,10 @@
 today=$(date +"%Y-%m-%d %H:%M:%S")
 
 echo "${today} - START $(basename ${0})"
-source "/home/ec2-user/trackerSpend/env/bin/activate"
+source "/home/ubuntu/.envs/trackerSpend/bin/activate"
 
 # Global variables.
-export BASE_DIRECTORY="/home/ec2-user/trackerSpend"
+export BASE_DIRECTORY="/home/ubuntu/projects/trackerSpend"
 
 export CRON_DIRECTORY="${BASE_DIRECTORY}/cron"
 export DATA_DIRECTORY="${BASE_DIRECTORY}/data"
@@ -21,8 +21,6 @@ export EXPENDITURE_EXPORTS_DIRECTORY="${EXPENDITURE_DIRECTORY}/exports"
 export INCOME_EXPORTS_DIRECTORY="${INCOME_DIRECTORY}/exports"
 
 # Scripts.
-python "${EXPENDITURE_DIRECTORY}/submit_automated_expenditure.py"
-python "${INCOME_DIRECTORY}/submit_automated_income.py"
 python "${BASE_DIRECTORY}/utils/remove_icon_files.py"
 
 deactivate

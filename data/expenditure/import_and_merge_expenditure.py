@@ -4,6 +4,7 @@ import logging
 import os
 import psycopg2
 import sys
+from configs import config
 
 
 class Script:
@@ -15,24 +16,24 @@ class Script:
 
 
 def create_logger(script):
-    today = script.today.strftime("%Y-%m-%d_%H:%M:%S")
-    directory = os.path.join(script.directory, "logs")
-    filename = "{0}_{1}.log".format(script.filename, today)
+    today = script.today.strftime('%Y-%m-%d_%H:%M:%S')
+    directory = os.path.join(script.directory, 'logs')
+    filename = '{0}_{1}.log'.format(script.filename, today)
     path = os.path.join(directory, filename)
 
-    logger = logging.getLogger("logger")
+    logger = logging.getLogger('logger')
     logger.setLevel(logging.DEBUG)
 
     # Add file handler to logger.
     file_handler = logging.FileHandler(path)
-    formatter = logging.Formatter("%(asctime)s %(levelname)s - %(message)s", "%Y-%m-%d %H:%M:%S")
+    formatter = logging.Formatter('%(asctime)s %(levelname)s - %(message)s', '%Y-%m-%d %H:%M:%S')
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
-    logger.debug("Log file created: {0}\n".format(path))
+    logger.debug('Log file created: {0}\n'.format(path))
 
     # Add smtp handler to logger.
     # smtp_handler = logging.handlers.SMTPHandler(... # Complete this
-    # logger.debug("SMTP functionality configured.")
+    # logger.debug('SMTP functionality configured.')
 
     return logger
 
@@ -40,9 +41,9 @@ def create_logger(script):
 def get_list_of_feeds():
     feeds = []
 
-    if os.environ.has_key("EXPENDITURE_EXPORTS_DIRECTORY"):
-        for feed in glob.glob(os.environ.get("EXPENDITURE_EXPORTS_DIRECTORY") + "/*.csv"):
-            feeds.append(feed)
+    conf = config.Config('expenditure')
+    for feed in glob.glob(os.path.join(conf.exports_directory, '*.csv')):
+        feeds.append(feed)
 
     return feeds
 
@@ -52,20 +53,19 @@ def archive_feed(source_path, load_success):
     source_filename = os.path.basename(source_path)
 
     if load_success:
-        destination_path = os.path.join(source_directory, "archived_exports", source_filename)
+        destination_path = os.path.join(source_directory, 'archived_exports', source_filename)
     else:
-        destination_path = os.path.join(source_directory, "bad_exports", source_filename)
+        destination_path = os.path.join(source_directory, 'bad_exports', source_filename)
 
     os.rename(source_path, destination_path)
 
 
 def psql_call(query, logger):
+    conf = config.Config('database')
     con = None
-    database = "jake"
-    user = "jake"
 
     try:
-        con = psycopg2.connect(database=database, user=user)
+        con = psycopg2.connect(database=conf.database, user=conf.user, password=conf.password)
         cur = con.cursor()
         cur.execute(query)
         con.commit()
@@ -106,7 +106,7 @@ def upsert_feed(logger):
             category = imp.category,
             peer_pressure = imp.peer_pressure,
             notes = imp.notes,
-            feed_source = imp.feed_source
+            source = imp.source
         FROM imp_expenditure imp
         WHERE TO_TIMESTAMP(imp.timestamp, 'DD/MM/YYYY HH24:MI:SS')::TIMESTAMP WITHOUT TIME ZONE = arc_expenditure.timestamp
         ;
@@ -119,7 +119,7 @@ def upsert_feed(logger):
             category,
             peer_pressure,
             notes,
-            feed_source
+            source
         ) (
             SELECT
                 TO_TIMESTAMP(timestamp, 'DD/MM/YYYY HH24:MI:SS')::TIMESTAMP WITHOUT TIME ZONE,
@@ -127,7 +127,7 @@ def upsert_feed(logger):
                 category,
                 peer_pressure,
                 notes,
-                feed_source
+                source
             FROM imp_expenditure imp
             WHERE NOT EXISTS (
                 SELECT 1
@@ -144,34 +144,31 @@ def upsert_feed(logger):
     psql_call(upsert_query, logger)
 
 
-def main():
+if __name__ == '__main__':
     script = Script()
     logger = create_logger(script)
 
-    logger.info("Determine feeds to be imported.")
+    logger.info('Determine feeds to be imported.')
     feeds = get_list_of_feeds()
     if feeds:
-        logger.info("Feeds have been determined.\n")
+        logger.info('Feeds have been determined.\n')
     else:
-        logger.info("There are no feeds to be imported.\n")
+        logger.info('There are no feeds to be imported.\n')
 
     for feed in feeds:
         try:
-            logger.info("Processing feed: {0}".format(feed))
+            logger.info('Processing feed: {0}'.format(feed))
             truncate_import_table(logger)
-            logger.info("Import table truncated...")
+            logger.info('Import table truncated...')
             import_feed(feed, logger)
-            logger.info("Feed imported...")
+            logger.info('Feed imported...')
             upsert_feed(logger)
-            logger.info("Feed upserted...")
+            logger.info('Feed upserted...')
             archive_feed(feed, True)
-            logger.info("Feed archived. Moving to next feed.\n")
+            logger.info('Feed archived. Moving to next feed.\n')
         except psycopg2.DatabaseError:
             archive_feed(feed, False)
-            logger.info("Moving feed to bad folder due to database error. Moving to next feed.\n")
+            logger.info('Moving feed to bad folder due to database error. Moving to next feed.\n')
 
-    logger.info("End of script.")
+    logger.info('End of script.')
     sys.exit(0)
-
-if __name__ == "__main__":
-    main()
