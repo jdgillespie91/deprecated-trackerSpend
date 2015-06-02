@@ -8,4 +8,5 @@ pages:
 - ['what/present.md', 'What am I building?']
 - ['what/past.md', 'What am I building?']
 - ['notes/deployment.md', 'Deployment notes']
+- ['notes/views.md', 'View notes']
 theme: readthedocs 
