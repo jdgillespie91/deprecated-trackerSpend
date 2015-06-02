@@ -2,6 +2,8 @@
 
 ## In short
 
+* Built reporting views: [View notes](http://trackerspend.readthedocs.org/en/latest/notes/views/)
+* Deployed on AWS: [Deployment notes](http://trackerspend.readthedocs.org/en/latest/notes/deployment/)
 * Built an email service: `services/email`.
 * Built a test service: `services/test`.
 * Built a message producer: `utils/message_producer.py`.
