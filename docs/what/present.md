@@ -2,12 +2,11 @@
 
 ## In short
 
-* Deploying on AWS.
+* Building further reporting views. 
 
 ## In more detail
 
-### Deploying on AWS.
+### Building further reporting views.
 
-I would like to host my project externally so that it can be up constantly (something that is convenient now but will become essential as the project grows).
+I have built some simple reporting views to give me an idea of what I've spent so far this week and month. I'd like to extend these to include past months and account in some way for predictable spending and income (rent, salary, etc).
 
-Amazon offers a cloud computing service called EC2 as part of its AWS suite. This is a good solution for me because it offers everything I require at the moment and has a free tier. This gives me the opportunity to grow my project.
