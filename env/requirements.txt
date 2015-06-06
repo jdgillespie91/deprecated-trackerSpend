@@ -1,3 +1,4 @@
+amqp==1.4.6
 cffi==1.0.3
 click==4.0
 cryptography==0.9
