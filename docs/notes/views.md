@@ -34,3 +34,6 @@ This view contains total net expenditure since the beginning of the month. Note 
 
 This view contains net expenditure per category since the beginning of the month. Note that net expenditure in this instance means all income subtracted from all expenditure (per category).
 
+### forecasted_income_category_month
+
+This view contains forecasted income per category on a monthly basis. It considers income within one standard deviation of the average income per category and assumes that the number of entries (count) is the average of the number of entries within one standard deviation of the true average number of entries per category.

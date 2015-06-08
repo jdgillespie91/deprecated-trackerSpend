@@ -86,7 +86,11 @@ If this works, exit `psql` again.
 3. `sudo apt-get install python3-dev`
 4. `pip install psycopg2`
 
-### Deployment
+### Rabbit 
+
+1. Install according to [the official instructions](https://www.rabbitmq.com/install-debian.html).
+2. Verify that it is running with `sudo rabbitmqctl status`. If the error indicates a `nodedown` and the return status code `echo $?` is `2`, then run `sudo rabbitmq-server -detached`.
+3. View queues with `sudo rabbitmqctl list_queues`. Similarly for exchanges, run `sudo rabbitmqctl list_exchanges`. [This documentation](https://www.rabbitmq.com/man/rabbitmqctl.1.man.html) contains more useful commands.
 
 ### TODO
 
