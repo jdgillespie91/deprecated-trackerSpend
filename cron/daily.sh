@@ -7,11 +7,10 @@ source "/home/ubuntu/.envs/trackerSpend/bin/activate"
 
 # Global variables.
 export BASE_DIRECTORY="/home/ubuntu/projects/trackerSpend"
+export PYTHONPATH="${PYTHONPATH}:${BASE_DIRECTORY}"
 
 export CRON_DIRECTORY="${BASE_DIRECTORY}/cron"
 export DATA_DIRECTORY="${BASE_DIRECTORY}/data"
-export ENV_DIRECTORY="${BASE_DIRECTORY}/env"
-export ETL_DIRECTORY="${BASE_DIRECTORY}/etl"
 
 export EXPENDITURE_DIRECTORY="${DATA_DIRECTORY}/expenditure"
 export INCOME_DIRECTORY="${DATA_DIRECTORY}/income"

@@ -2,7 +2,7 @@
 
 I am re-deploying the project on EC2 since I wanted to change the machine type I'm using. This is a good opportunity to document what I do during the deployment process so that I can automate it at a later stage.
 
-## General
+### General
 
 1. Start EC2 machine (I've used a Ubuntu image type with two EBS volumes; an 8GB root volume and a 22GB data volumn that does not delete on termination).
 2. Configure local SSH alias to allow connecting to the machine.
@@ -11,13 +11,13 @@ I am re-deploying the project on EC2 since I wanted to change the machine type I
 5. `mkdir -p projects && git clone git@github.com:jdgillespie91/trackerSpend.git projects/trackerSpend`
 6. Copy over config file from local.
 
-## Virtual environment
+### Virtual environment
 
 1. `sudo apt-get install python-pip`
 2. `pip install virtualenv` (note that I had used sudo here but I don't think it's necessary - it only determines which python to use).
 3. `mkdir -p .envs && virtualenv -p /usr/bin/python3.4 .envs/trackerSpend`
 
-## .bashrc
+### .bashrc
 
 1. Add the following to `~/.bashrc`.
 ```bash
@@ -47,14 +47,14 @@ function trackerSpend {
 }
 ```
 
-## Virtual environment (continued)
+### Virtual environment (continued)
 
 1. `. ~/.bashrc && trackerSpend`
 2. `pip install requests`
 3. `pip install gspread`
 4. `pip install pika`
 
-## PostgreSQL
+### PostgreSQL
 
 Note that some work on the database structure definitely needs to be done.
 
@@ -79,13 +79,19 @@ You should now be able to login from the command line without changing user.
 
 If this works, exit `psql` again.
 
-## psycopg2
+### psycopg2
 
 1. `sudo apt-get install python-psycopg2` on recommendation of [this page](http://initd.org/psycopg/docs/install.html). However, this did not enable `pip install psycopg2` to run successfully.
 2. `sudo apt-get install libpq-dev python-dev`. Note that this led to a different error (missing Python.h). The solution _should_ be the python-dev package. A little Googling suggests that there is a different package for Python 3.
 3. `sudo apt-get install python3-dev`
 4. `pip install psycopg2`
 
-## TODO
+### Rabbit 
+
+1. Install according to [the official instructions](https://www.rabbitmq.com/install-debian.html).
+2. Verify that it is running with `sudo rabbitmqctl status`. If the error indicates a `nodedown` and the return status code `echo $?` is `2`, then run `sudo rabbitmq-server -detached`.
+3. View queues with `sudo rabbitmqctl list_queues`. Similarly for exchanges, run `sudo rabbitmqctl list_exchanges`. [This documentation](https://www.rabbitmq.com/man/rabbitmqctl.1.man.html) contains more useful commands.
+
+### TODO
 
 I still need to write notes on backing up the database and building rabbit (something I've not done on the prod server yet).
