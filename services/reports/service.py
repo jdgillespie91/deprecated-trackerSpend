@@ -40,7 +40,8 @@ class Service():
         print(' [x] Building report.')
         try:
             body = ast.literal_eval(body)
-            report_path = self.__build_report()
+            view = 'net_expenditure_category_month'  # TODO Replace this with a message attribute.
+            report_path = self.__build_report_from_view(view)
             print(' [x] Report built.')
             self.__send_message(report_path)
             print(' [x] Message sent.')
@@ -52,7 +53,7 @@ class Service():
                 e).__name__))
             print(' [e] Arguments: {0}'.format(e.args))
 
-    def __build_report(self):
+    def __build_report_from_view(self, view):
         """ 
         TODO Make this useful.
         This is a method of Service.
@@ -66,43 +67,18 @@ class Service():
 
         # Get data from Postgres.
         select_query = """
-            SELECT
-                exp._year,
-                exp._month,
-                expenditure,
-                income,
-                income - expenditure balance
-            FROM (
-                SELECT DISTINCT
-                    EXTRACT(YEAR FROM timestamp) _year,
-                    EXTRACT(MONTH FROM timestamp) _month,
-                    SUM(amount) OVER (PARTITION BY EXTRACT(YEAR FROM timestamp), EXTRACT(MONTH FROM timestamp)) expenditure
-                FROM arc_expenditure
-            ) exp
-            LEFT OUTER JOIN (
-                SELECT DISTINCT
-                EXTRACT(YEAR FROM timestamp) _year,
-                EXTRACT(MONTH FROM timestamp) _month,
-                SUM(amount) OVER (PARTITION BY EXTRACT(YEAR FROM timestamp), EXTRACT(MONTH FROM timestamp)) income
-                FROM arc_income
-                WHERE category <> 'Reimbursements'
-            ) inc ON (
-                exp._year = inc._year
-                AND exp._month = inc._month
-            )
-            WHERE exp._year >= 2015  -- Started tracking income in 2015.
-            ORDER BY
-                exp._year,
-                exp._month
-        """
+            SELECT *
+            FROM {0}
+            ;
+        """.format(view)
 
         report_query = """
             COPY ({0}) TO '{1}' DELIMITER ',' CSV HEADER;
         """.format(select_query, report_path)
 
         con = None
-        database = 'jake'
-        user = 'jake'
+        database = 'postgres'
+        user = 'postgres'
 
         con = psycopg2.connect(database=database, user=user)
         cur = con.cursor()
