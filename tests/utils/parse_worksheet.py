@@ -17,8 +17,8 @@ class TestParseWorksheet(unittest.TestCase):
            self.fail('__write_data should be defined.')
 
     def test_parse_worksheet_function_is_defined(self):
-        if not hasattr(parse_worksheet, '__parse_worksheet'):
-           self.fail('__parse_worksheet should be defined.')
+        if not hasattr(parse_worksheet, 'parse_worksheet'):
+           self.fail('parse_worksheet should be defined.')
 
 
 if __name__ == '__main__':
