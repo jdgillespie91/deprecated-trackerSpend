@@ -1,6 +1,5 @@
 import unittest
 from utils import parse_worksheet
-from gspread import Spreadsheet
 
 
 class TestParseWorksheet(unittest.TestCase):
@@ -19,6 +18,9 @@ class TestParseWorksheet(unittest.TestCase):
     def test_parse_worksheet_function_is_defined(self):
         if not hasattr(parse_worksheet, 'parse_worksheet'):
            self.fail('parse_worksheet should be defined.')
+
+    def test_parse_worksheet_function_calls_open_worksheet(self):
+
 
 
 if __name__ == '__main__':
