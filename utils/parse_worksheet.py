@@ -1,4 +1,4 @@
-def __open_sheet():
+def __open_worksheet():
     pass
 
 def __get_data():
