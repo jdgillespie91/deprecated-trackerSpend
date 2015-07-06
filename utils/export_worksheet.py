@@ -25,8 +25,15 @@ def __write_data(data, file):
 def export_worksheet(auth_file, workbook_key, worksheet_name, out_file):
     """ Create .json export of a Google sheet.
 
-    The Google sheet should contain
-    
+    The Google sheet should contain a single header row and corresponding values underneath.
+    The export will contain a list of dictionaries where each item in the list is a
+    dictionary whose keys are the headers and whose values are the corresponding values
+    from a single row.
+
+    :param auth_file: Path of authentication file.
+    :param workbook_key: Workbook key.
+    :param worksheet_name: Worksheet name.
+    :out_file: Path of desired export file.
     """
     worksheet = __open_worksheet(auth_file, workbook_key, worksheet_name)
     data = __get_data(worksheet)
