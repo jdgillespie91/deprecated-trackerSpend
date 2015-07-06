@@ -8,7 +8,9 @@ def __open_worksheet(auth_file, workbook_key, worksheet_name):
     with open(auth_file) as key:
         json_key = json.load(key)
 
-    credentials = SignedJwtAssertionCredentials(json_key['client_email'], bytes(json_key['private_key'], 'UTF-8'), 'https://spreadsheets.google.com/feeds')
+    credentials = SignedJwtAssertionCredentials(json_key['client_email'],
+                                                bytes(json_key['private_key'], 'UTF-8'),
+                                                'https://spreadsheets.google.com/feeds')
     session = gspread.authorize(credentials)
     workbook = session.open_by_key(workbook_key)
     worksheet = workbook.worksheet(worksheet_name)
