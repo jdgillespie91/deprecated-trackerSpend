@@ -37,7 +37,7 @@ def export_worksheet(auth_file, workbook_key, worksheet_name, out_file):
 
     Usage::
 
-    >>> from utils.export_worksheet import export_worksheet
+    >>> from utils import export_worksheet
     >>> export_worksheet('/path/to/auth/file', 'workbook_key', 'worksheet_name', '/path/to/out/file')
 
     """
