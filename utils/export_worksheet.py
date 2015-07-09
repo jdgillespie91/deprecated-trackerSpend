@@ -35,11 +35,11 @@ def export_worksheet(auth_file, workbook_key, worksheet_name, out_file):
     :param auth_file: Path of authentication file.
     :param workbook_key: Workbook key.
     :param worksheet_name: Worksheet name.
-    :out_file: Path of desired export file.
+    :param out_file: Path of desired export file.
 
     Usage::
 
-    >>> from utils.export_worksheet import export_worksheet
+    >>> from utils import export_worksheet
     >>> export_worksheet('/path/to/auth/file', 'workbook_key', 'worksheet_name', '/path/to/out/file')
 
     """
