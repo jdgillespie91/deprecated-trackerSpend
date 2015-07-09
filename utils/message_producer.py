@@ -1,35 +1,18 @@
-import argparse
-import pika
+import amqp
+from time import sleep
 
 
-def send_message(queue, body=None):
-    """
-    Sends a message to the specified queue with specified body if applicable.
-
-    :param queue: Name of queue.
-    :type queue: str
-    :param body: Content of message body in the form "{'key': 'value'}".
-    :type body: str
-    """
-    connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
-    channel = connection.channel()
-
-    channel.queue_declare(queue=queue)
-
-    channel.basic_publish(exchange='', routing_key=queue, body=body)
-    print(" [x] Message sent.")
-    print(" Queue: {0}".format(queue))
-    print(" Body: {0}".format(body))
-
-    connection.close()
+def callback(message):
+    print(" [x] Received '{0}'. Sleeping...".format(message.body))
+    sleep(10)
 
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Send a message to the '
-                                                 'specified queue.')
-    parser.add_argument('-q', '--queue', required=True,
-                        help='The destination of the message')
-    parser.add_argument('-b', '--body', help='The message body, if applicable.')
-    args = parser.parse_args()
+connection = amqp.Connection()
+channel = connection.channel()
+channel.queue_declare(queue='hello')
 
-    send_message(args.queue, args.body)
+message = amqp.Message('Hello, world!')
+channel.basic_publish(message, exchange='', routing_key='hello')
+print(' [x] Sent: {0}'.format(message.body))
+
+connection.close()
