@@ -7,14 +7,14 @@ from utils import export_worksheet
 class ExportWorksheetIntegrationTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        auth_file = 'google_key.json'
+        auth_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'google_key.json')
         workbook_key = '1Vroj2pMME12rAiUA2vv2cwg9l9QFvh1QNCD-5veknro'
         worksheet_name = 'entries'
         out_file = 'out_file.json'
         export_worksheet(auth_file, workbook_key, worksheet_name, out_file)
 
     def setUp(self):
-        self.auth_file = 'google_key.json'
+        self.auth_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'google_key.json')
         self.workbook_key = '1Vroj2pMME12rAiUA2vv2cwg9l9QFvh1QNCD-5veknro'
         self.worksheet_name = 'entries'
         self.out_file = 'out_file.json'
