@@ -67,7 +67,7 @@ class Form:
         self.response_code = None
 
     def submit(self):
-        response = requests.post(self.url, self.submission)
+        response = requests.post(self.conf.url, self.submission)
         self.response_code = response.status_code
 
     def email(self, success):
@@ -139,18 +139,6 @@ def create_logger(script):
     # logger.debug('SMTP functionality configured.')
 
     return logger
-
-
-def parse_config():
-    config = configparser.ConfigParser()
-    config.read(os.path.join(os.path.dirname(__file__), 'resources', 'config.ini'))
-
-    username = config.get('automated_income_entries', 'username')
-    password = config.get('automated_income_entries', 'password')
-    workbook = config.get('automated_income_entries', 'workbook')
-    worksheet = config.get('automated_income_entries', 'worksheet')
-
-    return username, password, workbook, worksheet
 
 
 def parse_entries_sheet():
