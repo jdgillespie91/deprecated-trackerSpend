@@ -1,4 +1,5 @@
 import amqp
+from contextlib import closing
 
 
 def __get_channel(connection):
