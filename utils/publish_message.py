@@ -1,9 +1,6 @@
 import amqp
 
 
-def __open_connection():
-    return amqp.Connection()
-
 def __get_channel(connection):
     return connection.channel()
 
@@ -12,9 +9,6 @@ def __declare_exchange(channel, exchange, type):
 
 def __publish_message_to_exchange(channel, message, exchange, routing_key):
     channel.basic_publish(message, exchange=exchange, routing_key=routing_key)
-
-def __close_connection(connection):
-    connection.close()
 
 def publish_message(message, exchange, type, routing_key):
     """ Publish a message to an exchange with exchange type and routing key specified.
@@ -31,10 +25,7 @@ def publish_message(message, exchange, type, routing_key):
     >>> publish_message(message, 'exchange', 'type', 'routing_key')
 
     """
-    connection = __open_connection()
-    try:
+    with closing(amqp.Connection()) as connection:
         channel = __get_channel(connection)
         __declare_exchange(channel, exchange, type)
         __publish_message_to_exchange(channel, message, exchange, routing_key)
-    finally:
-        __close_connection(connection)
