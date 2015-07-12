@@ -25,4 +25,6 @@ if __name__ == '__main__':
     workbook_key = __get_workbook_key()
     worksheet_name = __get_worksheet_name()
     export_path = __get_export_path()
+    print('Exporting worksheet...')
     export_worksheet(auth_path, workbook_key, worksheet_name, export_path)
+    print('Worksheet exported.')
