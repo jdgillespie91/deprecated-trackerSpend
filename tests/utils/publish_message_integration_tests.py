@@ -35,7 +35,22 @@ class PublishMessageIntegrationTests(unittest.TestCase):
             self.channel.exchange_declare(exchange=self.exchange, type='fanout')
 
     def test_message_is_published_to_correct_exchange(self):
-        self.channel.basic_publish_confirm(msg=self.message, exchange=self.exchange, routing_key = self.routing_key)
+        self.channel.basic_publish_confirm(msg=self.message, exchange=self.exchange, routing_key=self.routing_key)
+
+    def test_published_message_has_correct_routing_key(self):
+        queue = 'test_queue'
+
+        try:
+            self.channel.queue_declare(queue=queue)
+            self.channel.queue_bind(queue=queue, exchange=self.exchange, routing_key=self.routing_key)
+            publish_message(self.message_body, self.exchange, self.type, self.routing_key)
+            message = self.channel.basic_get(queue=queue)
+        finally:
+            self.channel.queue_delete(queue=queue)
+
+        self.assertIsNotNone(message)
+        self.assertTrue(hasattr(message, 'routing_key'))
+        self.assertEqual(message.routing_key, 'test_routing_key')
 
     def test_message_does_not_publish_if_exchange_does_not_exist(self):
         with self.assertRaises(amqp.exceptions.NotFound):
