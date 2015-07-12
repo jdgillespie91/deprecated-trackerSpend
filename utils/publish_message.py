@@ -27,7 +27,7 @@ def publish_message(message_body, exchange, type, routing_key):
     Usage::
 
     >>> from utils import publish_message
-    >>> publish_message(message, 'exchange', 'type', 'routing_key')
+    >>> publish_message('message_body', 'exchange', 'type', 'routing_key')
 
     """
     with closing(amqp.Connection()) as connection:
