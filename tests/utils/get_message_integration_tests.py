@@ -26,6 +26,14 @@ class GetMessageIntegrationTests(unittest.TestCase):
         with self.assertRaises(amqp.exceptions.PreconditionFailed):
             self.channel.queue_declare(queue=self.queue, auto_delete=True)
 
+    def test_declared_queue_is_not_exclusive(self):
+        with self.assertRaises(amqp.exceptions.PreconditionFailed):
+            self.channel.queue_declare(queue=self.queue, exclusive=True)
+
+    def test_declared_queue_sends_reply_method(self):
+        with self.assertRaises(amqp.exceptions.PreconditionFailed):
+            self.channel.queue_declare(queue=self.queue, nowait=True)
+
     def test_message_is_retrieved_if_message_exists_in_queue(self):
         exchange = 'test_exchange'
         type = 'fanout'
