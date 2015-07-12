@@ -59,6 +59,7 @@ class PublishMessageIntegrationTests(unittest.TestCase):
     def tearDown(self):
         self.channel.exchange_delete(exchange=self.exchange)
 
+
 if __name__ == '__main__':
     suite = unittest.defaultTestLoader.loadTestsFromTestCase(PublishMessageIntegrationTests)
     unittest.TextTestRunner(verbosity=2).run(suite)

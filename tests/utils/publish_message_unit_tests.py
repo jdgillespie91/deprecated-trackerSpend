@@ -1,6 +1,7 @@
 import unittest
 from utils import publish_message
 
+
 class PublishMessageUnitTests(unittest.TestCase):
     def test_publish_message_is_callable(self):
         self.assertTrue(callable(publish_message))
