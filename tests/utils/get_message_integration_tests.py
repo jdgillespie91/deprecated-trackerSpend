@@ -32,14 +32,22 @@ class GetMessageIntegrationTests(unittest.TestCase):
         queue = 'local_test_queue'
         message = amqp.Message('test_message')
 
-        self.channel.exchange_declare(exchange=exchange, type=type)
-        self.channel.queue_declare(queue=queue)
-        self.channel.queue_bind(queue=queue, exchange=exchange)
-        self.channel.basic_publish_confirm(msg=message, exchange=exchange, routing_key='')
-        message = get_message(queue)
-        print(message.body)
-        self.channel.queue_delete(queue=queue)
-        self.channel.exchange_delete(exchange=exchange)
+        try:
+            self.channel.exchange_declare(exchange=exchange, type=type, durable=True, auto_delete=False)
+            self.channel.queue_declare(queue=queue, durable=True, auto_delete=False)
+            self.channel.queue_bind(queue=queue, exchange=exchange)
+            self.channel.basic_publish_confirm(msg=message, exchange=exchange, routing_key='')
+            message = get_message(queue)
+        finally:
+            self.channel.queue_delete(queue=queue)
+            self.channel.exchange_delete(exchange=exchange)
+
+        self.assertIsNotNone(message)
+        self.assertTrue(hasattr(message, 'body'))
+        self.assertEqual(message.body, 'test_message')
+
+    def tearDown(self):
+        self.channel.queue_delete(queue=self.queue)
 
 
 if __name__ == '__main__':
