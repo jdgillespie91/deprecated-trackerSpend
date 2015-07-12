@@ -11,9 +11,6 @@ class PublishMessageIntegrationTests(unittest.TestCase):
         routing_key = 'test_routing_key'
         publish_message(message, exchange, type, routing_key)
 
-    def test_tests(self):
-        self.assertTrue(True)
-
     def test_declared_exchange_is_durable(self):
         self.assertTrue(False)
 
