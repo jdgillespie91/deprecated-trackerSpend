@@ -12,7 +12,7 @@ def __declare_exchange(channel, exchange, type):
     channel.exchange_declare(exchange=exchange, type=type, durable=True, auto_delete=False)
 
 def __publish_message_to_exchange(channel, message, exchange, routing_key):
-    channel.basic_publish(message, exchange=exchange, routing_key=routing_key)
+    channel.basic_publish_confirm(msg=message, exchange=exchange, routing_key=routing_key)
 
 def publish_message(message_body, exchange, type, routing_key):
     """ Publish a message to an exchange with exchange type and routing key specified.

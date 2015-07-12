@@ -1,33 +1,45 @@
+import amqp
 import unittest
 from utils import publish_message
 
 
 class PublishMessageIntegrationTests(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        message = 'test_message'
-        exchange = 'test_exchange'
-        type = 'direct'
-        routing_key = 'test_routing_key'
-        publish_message(message, exchange, type, routing_key)
+    def setUp(self):
+        connection = amqp.Connection()
+        self.channel = connection.channel()
+
+        self.message_body = 'test_message'
+        self.message = amqp.Message(self.message_body)
+        self.exchange = 'test_exchange'
+        self.type = 'direct'
+        self.routing_key = 'test_routing_key'
+        publish_message(self.message_body, self.exchange, self.type, self.routing_key)
+
+    def test_test_exchange_is_declared(self):
+        self.channel.exchange_declare(exchange=self.exchange, type=self.type, passive=True)
+
+    def test_random_exchange_is_not_declared(self):
+        with self.assertRaises(amqp.exceptions.NotFound):
+            self.channel.exchange_declare(exchange='random_exchange', type=self.type, passive=True)
 
     def test_declared_exchange_is_durable(self):
-        self.assertTrue(False)
+        with self.assertRaises(amqp.exceptions.PreconditionFailed):
+            self.channel.exchange_declare(exchange=self.exchange, type=self.type, durable=False)
 
     def test_declared_exchange_does_not_auto_delete(self):
-        self.assertTrue(False)
+        with self.assertRaises(amqp.exceptions.PreconditionFailed):
+            self.channel.exchange_declare(exchange=self.exchange, type=self.type, auto_delete=True)
 
-    def test_message_is_published(self):
-        self.assertTrue(False)
+    def test_declared_exchange_is_correct_type(self):
+        with self.assertRaises(amqp.exceptions.PreconditionFailed):
+            self.channel.exchange_declare(exchange=self.exchange, type='fanout')
 
     def test_message_is_published_to_correct_exchange(self):
-        self.assertTrue(False)
+        self.channel.basic_publish_confirm(msg=self.message, exchange=self.exchange, routing_key = self.routing_key)
 
-    def test_message_is_published_with_correct_routing_key(self):
-        self.assertTrue(False)
-
-    def test_connection_closes_if_exception_is_raised(self):
-        self.assertTrue(False)
+    def test_message_does_not_publish_if_exchange_does_not_exist(self):
+        with self.assertRaises(amqp.exceptions.NotFound):
+            self.channel.basic_publish_confirm(msg=self.message, exchange='random_exchange', routing_key=self.routing_key)
 
 
 if __name__ == '__main__':
