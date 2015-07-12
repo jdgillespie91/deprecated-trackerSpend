@@ -43,5 +43,5 @@ class GetMessageIntegrationTests(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    suite = unittest.defaultTestLoader.loadTestsFromTestCase(PublishMessageIntegrationTests)
+    suite = unittest.defaultTestLoader.loadTestsFromTestCase(GetMessageIntegrationTests)
     unittest.TextTestRunner(verbosity=2).run(suite)
