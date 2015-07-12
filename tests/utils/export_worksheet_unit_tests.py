@@ -2,9 +2,6 @@ import unittest
 from utils import export_worksheet
 
 class ExportWorksheetUnitTests(unittest.TestCase):
-    def test_tests(self):
-        self.assertTrue(True)
-
     def test_export_worksheet_is_callable(self):
         self.assertTrue(callable(export_worksheet))
 
