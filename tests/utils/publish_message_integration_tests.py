@@ -34,10 +34,6 @@ class PublishMessageIntegrationTests(unittest.TestCase):
         with self.assertRaises(amqp.exceptions.PreconditionFailed):
             self.channel.exchange_declare(exchange=self.exchange, type='fanout')
 
-    def test_declared_exchange_sends_reply_method(self):
-        with self.assertRaises(amqp.exceptions.PreconditionFailed):
-            self.channel.exchange_declare(exchange=self.exchange, type=self.type, nowait=True)
-
     def test_message_is_published_to_correct_exchange(self):
         self.channel.basic_publish_confirm(msg=self.message, exchange=self.exchange, routing_key = self.routing_key)
 

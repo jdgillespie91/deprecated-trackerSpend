@@ -20,19 +20,15 @@ class GetMessageIntegrationTests(unittest.TestCase):
 
     def test_declared_queue_is_durable(self):
         with self.assertRaises(amqp.exceptions.PreconditionFailed):
-            self.channel.queue_declare(queue=self.queue, durable=False)
+            self.channel.queue_declare(queue=self.queue, durable=False, auto_delete=False)
 
     def test_declared_queue_does_not_auto_delete(self):
         with self.assertRaises(amqp.exceptions.PreconditionFailed):
-            self.channel.queue_declare(queue=self.queue, auto_delete=True)
+            self.channel.queue_declare(queue=self.queue, durable=True, auto_delete=True)
 
     def test_declared_queue_is_not_exclusive(self):
         with self.assertRaises(amqp.exceptions.PreconditionFailed):
-            self.channel.queue_declare(queue=self.queue, exclusive=True)
-
-    def test_declared_queue_sends_reply_method(self):
-        with self.assertRaises(amqp.exceptions.PreconditionFailed):
-            self.channel.queue_declare(queue=self.queue, nowait=True)
+            self.channel.queue_declare(queue=self.queue, durable=True, auto_delete=False, exclusive=True)
 
     def test_message_is_retrieved_if_message_exists_in_queue(self):
         exchange = 'test_exchange'
