@@ -41,6 +41,8 @@ class PublishMessageIntegrationTests(unittest.TestCase):
         with self.assertRaises(amqp.exceptions.NotFound):
             self.channel.basic_publish_confirm(msg=self.message, exchange='random_exchange', routing_key=self.routing_key)
 
+    def tearDown(self):
+        self.channel.exchange_delete(exchange=self.exchange)
 
 if __name__ == '__main__':
     suite = unittest.defaultTestLoader.loadTestsFromTestCase(PublishMessageIntegrationTests)
