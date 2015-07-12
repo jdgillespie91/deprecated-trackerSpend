@@ -14,7 +14,7 @@ def __get_message_from_queue(channel, queue):
 def get_message(queue):
     """ Get the first message from a queue.
 
-    The first message from a queue is retrieved. The queue is declared if one of the same name does not already exist. If one of the same name does already exist but has different parameters, an error is raised. The queue has durable=True and auto_delete=False set as default.
+    The first message from a queue is retrieved. If there is no such message, the function exits quietly. The queue is declared if one of the same name does not already exist. If one of the same name does already exist but has different parameters, an error is raised. The queue has durable=True and auto_delete=False set as default.
 
     :param queue: The name of the queue from which to get the message.
 
