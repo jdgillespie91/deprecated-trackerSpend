@@ -9,7 +9,7 @@ def __declare_queue(channel, queue):
     channel.queue_declare(queue=queue, durable=True, auto_delete=False)
 
 def __get_message_from_queue(channel, queue):
-    channel.basic_get(queue=queue)
+    return channel.basic_get(queue=queue)
 
 def get_message(queue):
     """ Get the first message from a queue.
@@ -21,10 +21,10 @@ def get_message(queue):
     Usage::
 
     >>> from utils import get_message
-    >>> get_message('queue')
+    >>> message = get_message('queue')
 
     """
     with closing(amqp.Connection()) as connection:
         channel = __get_channel(connection)
         __declare_queue(channel, queue)
-        __get_message_from_queue(channel, queue)
+        return  __get_message_from_queue(channel, queue)
