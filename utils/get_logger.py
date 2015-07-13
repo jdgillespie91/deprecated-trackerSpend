@@ -2,7 +2,7 @@ import logging
 from sys import stdout
 
 
-def get_logger(id):
+def get_logger(name):
     """ Defines a logger object.
 
     The logger object has five levels of logging available to it; DEBUG, INFO, WARNING, ERROR and CRITICAL. In all instances, the logger objects logs to stdout. The format of the log is shown below.
@@ -20,4 +20,4 @@ def get_logger(id):
     stream = stdout
 
     logging.basicConfig(format=format, style=style, datefmt=datefmt, level=level, stream=stream)
-    return logging.getLogger(id)
+    return logging.getLogger(name)
