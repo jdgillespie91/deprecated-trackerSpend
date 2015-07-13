@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from utils import export_worksheet
+from utils import export_worksheet, logger
 
 
 def __get_auth_path():
@@ -25,6 +25,7 @@ if __name__ == '__main__':
     workbook_key = __get_workbook_key()
     worksheet_name = __get_worksheet_name()
     export_path = __get_export_path()
-    print('Exporting worksheet...')
+
+    logger.debug('auth_path: {0}'.format(auth_path))
+
     export_worksheet(auth_path, workbook_key, worksheet_name, export_path)
-    print('Worksheet exported.')
