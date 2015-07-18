@@ -1,5 +1,5 @@
 import logging
-from sys import stdout
+import sys
 
 
 def get_logger(name):
@@ -17,7 +17,17 @@ def get_logger(name):
     style = '{'
     datefmt = '%Y-%m-%d %H:%M:%S'
     level = logging.DEBUG
-    stream = stdout
+    stream = sys.stdout
 
     logging.basicConfig(format=format, style=style, datefmt=datefmt, level=level, stream=stream)
     return logging.getLogger(name)
+
+    # get Logger
+    # create Handler
+    # set level of Handler
+    # create Formatter
+    # add Formatter to Handler
+    # add Handler to Logger
+    # return Logger
+
+    # This is good because I can have a stdout handler that logs in a certain way, a file handler that logs in another, etc. It can all be done in here and then the application level logging changes. Experiment with this by adding a stdout logger, writing an app that uses it, then adding a file handler and seeing if the logging goes straight to that without any other mods.
