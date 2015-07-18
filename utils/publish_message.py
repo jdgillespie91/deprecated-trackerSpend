@@ -1,4 +1,5 @@
 import amqp
+import logging
 from contextlib import closing
 
 
@@ -30,8 +31,13 @@ def publish_message(message_body, exchange, type, routing_key):
     >>> publish_message('message_body', 'exchange', 'type', 'routing_key')
 
     """
+    logger = logging.getLogger(__name__)
+    logger.info('START {0}.'.format(__name__))
+
     with closing(amqp.Connection()) as connection:
         channel = __get_channel(connection)
         message = __get_message(message_body)
         __declare_exchange(channel, exchange, type)
         __publish_message_to_exchange(channel, message, exchange, routing_key)
+
+    logger.info('END {0}.'.format(__name__))

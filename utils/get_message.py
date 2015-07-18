@@ -1,4 +1,5 @@
 import amqp
+import logging
 from contextlib import closing
 
 
@@ -24,7 +25,12 @@ def get_message(queue):
     >>> message = get_message('queue')
 
     """
+    logger = logging.getLogger(__name__)
+    logger.info('START {0}.'.format(__name__))
+
     with closing(amqp.Connection()) as connection:
         channel = __get_channel(connection)
         __declare_queue(channel, queue)
         return  __get_message_from_queue(channel, queue)
+
+    logger.info('END {0}.'.format(__name__))

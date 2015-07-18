@@ -45,9 +45,10 @@ def export_worksheet(auth_file, workbook_name, worksheet_name, out_file):
 
     """
     logger = logging.getLogger(__name__)
+    logger.info('START {0}.'.format(__name__))
 
-    logger.info('START export_worksheet.')
     worksheet = __open_worksheet(auth_file, workbook_name, worksheet_name)
     data = __get_data(worksheet)
     __write_data(data, out_file)
-    logger.info('END export_worksheet.')
+
+    logger.info('END {0}.'.format(__name__))
