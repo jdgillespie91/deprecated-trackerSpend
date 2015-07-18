@@ -4,7 +4,7 @@ import os
 from oauth2client.client import SignedJwtAssertionCredentials
 
 
-def __open_worksheet(auth_file, workbook_key, worksheet_name):
+def __open_worksheet(auth_file, workbook_name, worksheet_name):
     with open(auth_file) as key:
         json_key = json.load(key)
 
@@ -12,7 +12,7 @@ def __open_worksheet(auth_file, workbook_key, worksheet_name):
                                                 bytes(json_key['private_key'], 'UTF-8'),
                                                 'https://spreadsheets.google.com/feeds')
     session = gspread.authorize(credentials)
-    workbook = session.open_by_key(workbook_key)
+    workbook = session.open(workbook_name)
     worksheet = workbook.worksheet(worksheet_name)
 
     return worksheet
@@ -24,7 +24,7 @@ def __write_data(data, file):
     with open(file, 'w') as f:
         json.dump(data, f, indent=4)
 
-def export_worksheet(auth_file, workbook_key, worksheet_name, out_file):
+def export_worksheet(auth_file, workbook_name, worksheet_name, out_file):
     """ Create .json export of a Google sheet.
 
     The Google sheet should contain a single header row and corresponding values underneath.
@@ -33,16 +33,16 @@ def export_worksheet(auth_file, workbook_key, worksheet_name, out_file):
     from a single row.
 
     :param auth_file: Path of authentication file.
-    :param workbook_key: Workbook key.
+    :param workbook_name: Workbook name.
     :param worksheet_name: Worksheet name.
     :param out_file: Path of desired export file.
 
     Usage::
 
     >>> from utils import export_worksheet
-    >>> export_worksheet('/path/to/auth/file', 'workbook_key', 'worksheet_name', '/path/to/out/file')
+    >>> export_worksheet('/path/to/auth/file', 'workbook_name', 'worksheet_name', '/path/to/out/file')
 
     """
-    worksheet = __open_worksheet(auth_file, workbook_key, worksheet_name)
+    worksheet = __open_worksheet(auth_file, workbook_name, worksheet_name)
     data = __get_data(worksheet)
     __write_data(data, out_file)
