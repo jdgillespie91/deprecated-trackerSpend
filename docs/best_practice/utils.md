@@ -1,3 +1,5 @@
+# Utils
+
 The utils library is a collection of useful but miscellaneous functions. Each function should do one thing and one thing only. Inspired by the unix commands, this ethos should allow for the removal of repetitious code without sacrificing code readability and therefore maintainability.
 
 Here are a set of rules that should be followed when developing in the utils library:
@@ -19,7 +21,9 @@ This is achieved by including ```from .utils_module import utils_function``` in 
 def foo(bar):
     """ Here's a line explaining concisely what foo does.
 
-    Here's a couple more lines explaining what foo does. Feel free to be a little more verbose here and include details on how foo does what it does.
+    Here's a couple more lines explaining what foo does. 
+    Feel free to be a little more verbose here and include 
+    details on how foo does what it does.
 
     :param bar: Explain concisely what bar is, including the data type if it isn't obvious.
 
