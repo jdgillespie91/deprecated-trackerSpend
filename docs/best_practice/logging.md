@@ -15,5 +15,6 @@ def foo():
 
     logger.info('END {0}.'.format(__name__))
 ```
+Logging may then be executed throughout the public function as necessary. Note that if logging is required in any of the private functions, the ```Logger``` object will have to be passed as a parameter. If usage in this way turns out to be extensive, I may change the best practice to define the Logger at a module level rather than inside the public function.
 
 The specifics of how to deal with logging in "top-level" applications is yet to be defined but the general idea is to configure a logger with ```Handler``` such that all logging goes to ```stdout``` and then, using a logging application, route everything from ```stdout``` to a logfile (or multiple logfiles). This will become clearer in time though.
