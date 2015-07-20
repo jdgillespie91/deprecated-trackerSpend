@@ -9,7 +9,7 @@ Here are a set of rules that should be followed when developing in the utils lib
 * Each module should contain logging as defined in the Logging best practice.  Each module should have a test suite (unit or integration).
 * Each module should do exactly one thing.
 * No module should contain calls to another module in the utils library.
-* Each module should be used as follows:
+* Each public function should be callable as follows:
 ```python
 from utils import utils_function
 utils_function()
