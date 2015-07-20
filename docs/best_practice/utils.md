@@ -17,7 +17,8 @@ utils_function()
 This is achieved by including 
 ```python
 from .utils_module import utils_function
-``` in the ```__init__.py```.
+``` 
+in the ```__init__.py```.
 
 * Each module should contain a single docstring in the public function such that help(utils_function) details in pragmatic terms the behaviour of the function and precisely how it should be called. For example:
 ```python
