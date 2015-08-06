@@ -22,14 +22,14 @@ class GetMessageIntegrationTests(unittest.TestCase):
         self.assertIs(get_message(queue=self.queue), None)
 
     def test_returns_message_if_queue_exists_and_message_in_queue(self):
-        self.channel.basic_publish(msg=amqp.Message('message'), routing_key=self.queue)
+        self.channel.basic_publish(msg=amqp.Message('test_message'), routing_key=self.queue)
         self.assertIsInstance(get_message(queue=self.queue), amqp.basic_message.Message)
 
     def test_returned_message_has_correct_attributes(self):
-        self.channel.basic_publish(msg=amqp.Message('message'), routing_key=self.queue)
+        self.channel.basic_publish(msg=amqp.Message('test_message'), routing_key=self.queue)
         message = get_message(queue=self.queue)
         self.assertTrue(hasattr(message, 'body'))
-        self.assertEqual(message.body, 'message')
+        self.assertEqual(message.body, 'test_message')
 
     def skip_test_message_is_removed_from_queue_after_getting(self):
         pass
