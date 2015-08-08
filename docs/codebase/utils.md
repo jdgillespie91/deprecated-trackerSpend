@@ -1,5 +1,3 @@
-# Utils
+# get_message
 
-## get_message
-
-![alt text](IMG_2899.JPG)
+![get_message flowchart](get_message_flowchart.png)
