@@ -2,12 +2,12 @@ import amqp
 from contextlib import closing
 
 
-def get_message(queue=''):
+def get_message(queue):
     """ Get the first message from a queue.
 
     The first message from a queue is retrieved. If there is no such message, the function exits quietly. 
 
-    :param queue (optional): The name of the queue from which to get the message. If blank, the default queue is used.
+    :param queue: The name of the queue from which to get the message.
 
     Usage::
 
