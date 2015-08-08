@@ -3,12 +3,15 @@ repo_url: https://github.com/jdgillespie91/trackerSpend
 site_description: Online documentation for trackerSpend.
 site_author: Jacob Gillespie
 pages:
-- ['index.md', 'Welcome!']
-- ['what/future.md', 'What am I building?']
-- ['what/present.md', 'What am I building?']
-- ['what/past.md', 'What am I building?']
-- ['best_practice/logging', 'Best Practice']
-- ['best_practice/utils', 'Best Practice']
-- ['notes/deployment.md', 'Deployment notes']
-- ['notes/views.md', 'View notes']
+- Home: 'index.md'
+- What am I building?:
+    - 'Future': 'what/future.md'
+    - 'Present': 'what/present.md'
+    - 'Past': 'what/past.md'
+- Best Practice:
+    - 'Logging': 'best_practice/logging.md'
+    - 'Utils': 'best_practice/utils.md'
+- Notes:
+    - 'Deployment': 'notes/deployment.md'
+    - 'Views': 'notes/views.md'
 theme: readthedocs 
