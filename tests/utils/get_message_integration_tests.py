@@ -19,11 +19,13 @@ class GetMessageIntegrationTests(unittest.TestCase):
         self.assertIs(get_message(queue=self.queue), None)
 
     def test_message_is_returned_if_queue_exists_and_message_exists(self):
-        self.channel.basic_publish(msg=self.message, routing_key=self.queue)
+        self.channel.basic_publish(msg=self.msg, routing_key=self.queue)
         self.assertIsInstance(get_message(queue=self.queue), amqp.basic_message.Message)
 
     def tearDown(self):
         self.channel.queue_delete(queue=self.queue)
+        self.channel.close()
+        self.connection.close()
 
 
 if __name__ == '__main__':
