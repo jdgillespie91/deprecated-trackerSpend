@@ -1,5 +1,4 @@
 import amqp
-import mock
 import unittest
 from utils import get_message
 
@@ -7,7 +6,7 @@ from utils import get_message
 class GetMessageIntegrationTests(unittest.TestCase):
     def setUp(self):
         self.queue = 'test_queue'
-        self.message = amqp.Message('test_message')
+        self.msg = amqp.Message('test_message')
         self.connection = amqp.Connection()
         self.channel = self.connection.channel()
         self.channel.queue_declare(self.queue)
@@ -16,10 +15,10 @@ class GetMessageIntegrationTests(unittest.TestCase):
         with self.assertRaises(amqp.exceptions.NotFound):
             get_message(queue='does_not_exist')
 
-    def test_none_is_returned_if_queue_exists_and_no_message(self):
+    def test_none_is_returned_if_queue_exists_and_no_message_exists(self):
         self.assertIs(get_message(queue=self.queue), None)
 
-    def test_message_is_returned_if_queue_exists_and_message(self):
+    def test_message_is_returned_if_queue_exists_and_message_exists(self):
         self.channel.basic_publish(msg=self.message, routing_key=self.queue)
         self.assertIsInstance(get_message(queue=self.queue), amqp.basic_message.Message)
 
