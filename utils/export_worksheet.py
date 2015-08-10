@@ -4,7 +4,7 @@ import os
 from oauth2client.client import SignedJwtAssertionCredentials
 
 
-def __open_worksheet(auth_file, workbook_key, worksheet_name):
+def __get_worksheet(auth_file, workbook_key, worksheet_name):
     with open(auth_file) as key:
         json_key = json.load(key)
 
@@ -13,11 +13,8 @@ def __open_worksheet(auth_file, workbook_key, worksheet_name):
                                                 'https://spreadsheets.google.com/feeds')
     session = gspread.authorize(credentials)
     workbook = session.open_by_key(workbook_key)
-    worksheet = workbook.worksheet(worksheet_name)
-
-    return worksheet
-
-def __get_data(worksheet):
+    worksheet =  workbook.worksheet(worksheet_name)
+    
     return worksheet.get_all_records()
 
 def __write_data(data, file):
@@ -43,6 +40,5 @@ def export_worksheet(auth_file, workbook_key, worksheet_name, out_file):
     >>> export_worksheet('/path/to/auth/file', 'workbook_key', 'worksheet_name', '/path/to/out/file')
 
     """
-    worksheet = __open_worksheet(auth_file, workbook_key, worksheet_name)
-    data = __get_data(worksheet)
+    data = __get_data(auth_file, workbook_key, worksheet_name)
     __write_data(data, out_file)
