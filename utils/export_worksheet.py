@@ -4,7 +4,7 @@ import os
 from oauth2client.client import SignedJwtAssertionCredentials
 
 
-def __get_worksheet(auth_file, workbook_key, worksheet_name):
+def __get_data(auth_file, workbook_key, worksheet_name):
     with open(auth_file) as key:
         json_key = json.load(key)
 
