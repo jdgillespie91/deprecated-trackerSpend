@@ -14,4 +14,6 @@ pages:
 - Notes:
     - 'Deployment': 'notes/deployment.md'
     - 'Views': 'notes/views.md'
+- Codebase:
+    - 'Utils': 'codebase/utils.md'
 theme: readthedocs 

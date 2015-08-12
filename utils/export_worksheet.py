@@ -5,7 +5,7 @@ import os
 from oauth2client.client import SignedJwtAssertionCredentials
 
 
-def __open_worksheet(auth_file, workbook_name, worksheet_name):
+def __get_data(auth_file, workbook_key, worksheet_name):
     with open(auth_file) as key:
         json_key = json.load(key)
 
@@ -16,9 +16,6 @@ def __open_worksheet(auth_file, workbook_name, worksheet_name):
     workbook = session.open(workbook_name)
     worksheet = workbook.worksheet(worksheet_name)
 
-    return worksheet
-
-def __get_data(worksheet):
     return worksheet.get_all_records()
 
 def __write_data(data, file):
@@ -47,8 +44,7 @@ def export_worksheet(auth_file, workbook_name, worksheet_name, out_file):
     logger = logging.getLogger(__name__)
     logger.info('START {0}.'.format(__name__))
 
-    worksheet = __open_worksheet(auth_file, workbook_name, worksheet_name)
-    data = __get_data(worksheet)
+    data = __get_data(auth_file, workbook_key, worksheet_name)
     __write_data(data, out_file)
 
     logger.info('END {0}.'.format(__name__))
