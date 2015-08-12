@@ -1,5 +1,6 @@
 # Directories
 .idea/
+__pycache__/
 cron/logs/*
 data/expenditure/exports/
 data/expenditure/flags/
