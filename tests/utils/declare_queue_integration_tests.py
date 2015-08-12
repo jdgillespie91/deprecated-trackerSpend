@@ -14,20 +14,16 @@ class DeclareQueueIntegrationTests(unittest.TestCase):
         self.channel.queue_declare(queue=self.queue, passive=True)
 
     def test_error_is_raised_if_queue_is_durable(self):
-        with self.assertRaises(amqp.exceptions.NotFound):
+        with self.assertRaises(amqp.exceptions.PreconditionFailed):
             self.channel.queue_declare(queue=self.queue, durable=True)
 
     def test_error_is_raised_if_queue_is_exclusive(self):
-        with self.assertRaises(amqp.exceptions.NotFound):
+        with self.assertRaises(amqp.exceptions.ResourceLocked):
             self.channel.queue_declare(queue=self.queue, exclusive=True)
 
     def test_error_is_raised_if_queue_is_not_auto_deleting(self):
-        with self.assertRaises(amqp.exceptions.NotFound):
+        with self.assertRaises(amqp.exceptions.PreconditionFailed):
             self.channel.queue_declare(queue=self.queue, auto_delete=False)
-
-    def test_error_is_raised_if_queue_waits(self):
-        with self.assertRaises(amqp.exceptions.NotFound):
-            self.channel.queue_declare(queue=self.queue, nowait=True)
 
     def test_none_is_returned_if_queue_with_same_properties_exists(self):
         self.assertIs(declare_queue(queue=self.queue), None)
