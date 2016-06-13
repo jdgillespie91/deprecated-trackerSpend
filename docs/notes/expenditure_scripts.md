@@ -30,7 +30,7 @@ submit_request(row), row.submit_request()
 
 ### Thoughts.
 
-I should seperate parsing and submitting. That way, I can keep an active record of what I've submitted (the parse can be edited but the sheet can't).
+I should separate parsing and submitting. That way, I can keep an active record of what I've submitted (the parse can be edited but the sheet can't).
 
 I need to decide on what I want my classes to be. I have a bunch of options but I think the key things to bear in mind when deciding are:
 * Encapsulation. Keep dependent pieces together and separate everything else. This way, if something breaks or changes (e.g. authentication method changes), only one piece of the code needs to be changed. This has the added benefit that the code can be reused.
